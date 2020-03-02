@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
+
+
+
+    <bean name="org.jahia.modules.jahiaui.Main" class="org.jahia.modules.jahiaui.Main">
+    </bean>
+
+    <bean name="contentmanagerRendererMapping" class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
+        <property name="urlMap">
+            <map>
+                <entry key="/moonstone/**" value-ref="org.jahia.modules.jahiaui.Main"/>
+            </map>
+        </property>
+    </bean>
+
+
+
+</beans>

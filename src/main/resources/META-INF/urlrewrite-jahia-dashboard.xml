@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE urlrewrite PUBLIC "-//tuckey.org//DTD UrlRewrite 3.2//EN"
+        "http://tuckey.org/res/dtds/urlrewrite3.2.dtd">
+
+<urlrewrite>
+
+    <rule>
+        <name>Jahia dashboard to V8</name>
+        <note>Redirects old /cms/dashboard urls</note>
+        <condition operator="notequal" type="parameter" name="redirect">false</condition>
+        <from>^/cms/dashboard/(.*)\.(.*)\.html$</from>
+        <to type="redirect">%{context-path}/jahia/dashboard/$2</to>
+    </rule>
+
+</urlrewrite>
