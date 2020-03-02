@@ -1,1 +1,1 @@
-__webpack_public_path__ = window.contextJsParameters.contextPath + '/modules/jahia-user-entries/javascript/apps/';
+__webpack_public_path__ = window.contextJsParameters.contextPath + '/modules/jahia-page-composer/javascript/apps/';
