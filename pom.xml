@@ -55,7 +55,7 @@
         <version>7.3.3.0</version>
     </parent>
     <artifactId>jahia-page-composer</artifactId>
-    <name>jahia-page-composer</name>
+    <name>Jahia Page Composer</name>
     <version>1.0.0-SNAPSHOT</version>
     <packaging>bundle</packaging>
     <description>This is the custom module (jahia-page-composer) for running on a Jahia server.</description>
