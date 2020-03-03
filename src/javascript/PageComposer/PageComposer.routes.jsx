@@ -5,12 +5,17 @@ import {PrimaryNavItem} from '@jahia/moonstone';
 import {useTranslation} from 'react-i18next';
 import Feather from '@jahia/moonstone/dist/icons/Feather';
 import PageComposer from './PageComposer';
+import {useSelector} from 'react-redux';
 
 const PATH = '/page-composer';
 
 export const PageComposerGroup = () => {
     const {t} = useTranslation();
     const history = useHistory();
+    const current = useSelector(state => ({language: state.language, site: state.site}));
+    if (current.site === 'systemsite') {
+        return null;
+    }
 
     return (
         <PrimaryNavItem
@@ -23,7 +28,7 @@ export const PageComposerGroup = () => {
 };
 
 registry.add('primary-nav-item', 'pageComposerNavGroup', {
-    targets: ['nav-root-top:0'],
+    targets: ['nav-root-top:1'],
     render: () => <PageComposerGroup/>
 });
 
