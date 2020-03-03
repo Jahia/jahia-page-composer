@@ -28,7 +28,7 @@
   },
   "dependencies": {
     "@jahia/moonstone": "^0.11.0",
-    "@jahia/ui-extender": "^0.3.2",
+    "@jahia/ui-extender": "^0.4.0",
     "graphql-tag": "^2.10.3",
     "prop-types": "^15.7.2",
     "react": "^16.10.2",

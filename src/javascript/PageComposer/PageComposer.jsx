@@ -1,8 +1,8 @@
 import React, {useEffect, useState} from 'react';
 import {registry} from '@jahia/ui-extender';
-import Iframe from 'react-iframe';
 import {useDispatch, useSelector} from 'react-redux';
 import {useHistory, useLocation} from 'react-router-dom';
+import {IFrameRenderer} from '@jahia/ui-extender';
 
 let initialValue = function (location, siteKey, language) {
     let mainResourcePath = `/cms/edit/default/${language}/sites/${siteKey}/home.html`;
@@ -95,11 +95,9 @@ export default function () {
     }
 
     return (
-        <Iframe url={window.contextJsParameters.contextPath + mainResourcePath}
-                width="100%"
-                height="100%"
-                id="page-composer-frame"
-                onLoad={iFrameOnLoad}
+        <IFrameRenderer url={window.contextJsParameters.contextPath + mainResourcePath}
+                        id="page-composer-frame"
+                        onLoad={iFrameOnLoad}
         />
     );
 }
