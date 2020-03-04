@@ -28,6 +28,22 @@ let getPathFromChildIFrame = function () {
     return '';
 };
 
+let updateStoreAndHistory = function (pathFromChildIFrame, currentSiteKey, currentLanguage) {
+    if (pathFromChildIFrame !== '') {
+        let newPath = history.location.pathname.replace(/page-composer.*/gi, 'page-composer' + pathFromChildIFrame);
+        history.replace(newPath);
+        let siteKey = pathFromChildIFrame.match(siteKeyRegexp)[1];
+        let language = pathFromChildIFrame.match(languageRegexp)[1];
+        if (currentSiteKey !== siteKey) {
+            dispatch(registry.get('redux-reducer', 'site').actions.setSite(siteKey));
+        }
+
+        if (currentLanguage !== language) {
+            dispatch(registry.get('redux-reducer', 'language').actions.setLanguage(language));
+        }
+    }
+};
+
 const iFrameOnHistoryMessage = event => {
     if (history !== null) {
         if (event.origin !== window.location.origin) {
@@ -39,17 +55,8 @@ const iFrameOnHistoryMessage = event => {
                 let currentSiteKey = history.location.pathname.match(siteKeyRegexp)[1];
                 let currentLanguage = history.location.pathname.match(languageRegexp)[1];
                 let pathFromChildIFrame = getPathFromChildIFrame();
-                let newPath = history.location.pathname.replace(/page-composer.*/gi, 'page-composer' + pathFromChildIFrame);
-                history.replace(newPath);
-                let siteKey = pathFromChildIFrame.match(siteKeyRegexp)[1];
-                let language = pathFromChildIFrame.match(languageRegexp)[1];
-                if (currentSiteKey !== siteKey) {
-                    dispatch(registry.get('redux-reducer', 'site').actions.setSite(siteKey));
-                }
 
-                if (currentLanguage !== language) {
-                    dispatch(registry.get('redux-reducer', 'language').actions.setLanguage(language));
-                }
+                updateStoreAndHistory(pathFromChildIFrame, currentSiteKey, currentLanguage);
             } else if (event.data.msg === 'setTitle') {
                 document.title = event.data.title;
             }
@@ -76,6 +83,10 @@ export default function () {
     const iFrameOnLoad = () => {
         if (window.frames['page-composer-frame'] !== undefined) {
             window.addEventListener('message', iFrameOnHistoryMessage, false);
+            let currentSiteKey = location.pathname.endsWith('page-composer') ? '' : history.location.pathname.match(siteKeyRegexp)[1];
+            let currentLanguage = location.pathname.endsWith('page-composer') ? '' : history.location.pathname.match(languageRegexp)[1];
+            let pathFromChildIFrame = getPathFromChildIFrame();
+            updateStoreAndHistory(pathFromChildIFrame, currentSiteKey, currentLanguage);
         }
     };
 
