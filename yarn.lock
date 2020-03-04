@@ -1464,14 +1464,16 @@
     react-is "^16.12.0"
     to-px "^1.1.0"
 
-"@jahia/ui-extender@^0.3.2":
-  version "0.3.2"
-  resolved "https://npm.jahia.com/@jahia%2fui-extender/-/ui-extender-0.3.2.tgz#21740a762433d34b7fc3faf577ca64e021f5cc11"
-  integrity sha512-CKwN4yqqX1juRQShCNTl8H95iLVV1oxfhG0FGRwG/eAPo2KhA4Ss5Bge0azFnCcV+8zf2VsKY+artRwvnrUJPw==
+"@jahia/ui-extender@^0.4.0":
+  version "0.4.0"
+  resolved "https://npm.jahia.com/@jahia%2fui-extender/-/ui-extender-0.4.0.tgz#fbec004b314e10d1e744539cf8a8cf625d573ccf"
+  integrity sha512-A1M7fvtJenUBKdDjM2u8cP3yQ7rOLj5YRe3G6Jw0Y+NhiI5mt76RIU9GbxENY+Gf6doPBiolImxrFFwu2AHWkw==
   dependencies:
-    lodash "^4.17.13"
     prop-types "^15.6.1"
     react "^16.12.0"
+    react-iframe "^1.8.0"
+    react-redux "^7.2.0"
+    redux "^4.0.5"
     rxjs "^6.5.3"
 
 "@jest/console@^24.7.1", "@jest/console@^24.9.0":
@@ -7605,6 +7607,14 @@ redent@^1.0.0:
     indent-string "^2.1.0"
     strip-indent "^1.0.1"
 
+redux@^4.0.5:
+  version "4.0.5"
+  resolved "https://npm.jahia.com/redux/-/redux-4.0.5.tgz#4db5de5816e17891de8a80c424232d06f051d93f"
+  integrity sha512-VSz1uMAH24DM6MF72vcojpYPtrTUu3ByVWfPL1nPfVRb5mZVTve5GnNCUV53QM/BZ66xfWrm0CTWoM+Xlz8V1w==
+  dependencies:
+    loose-envify "^1.4.0"
+    symbol-observable "^1.2.0"
+
 regenerate-unicode-properties@^8.1.0:
   version "8.1.0"
   resolved "https://registry.yarnpkg.com/regenerate-unicode-properties/-/regenerate-unicode-properties-8.1.0.tgz#ef51e0f0ea4ad424b77bf7cb41f3e015c70a3f0e"
@@ -8532,6 +8542,11 @@ svgo@^1.2.2:
     stable "^0.1.8"
     unquote "~1.1.1"
     util.promisify "~1.0.0"
+
+symbol-observable@^1.2.0:
+  version "1.2.0"
+  resolved "https://npm.jahia.com/symbol-observable/-/symbol-observable-1.2.0.tgz#c22688aed4eab3cdc2dfeacbb561660560a00804"
+  integrity sha512-e900nM8RRtGhlV36KGEU9k65K3mPb1WV70OdjfxlG2EAuM1noi/E/BaW/uMhL7bPEssK8QV57vN3esixjUvcXQ==
 
 symbol-tree@^3.2.2:
   version "3.2.4"
