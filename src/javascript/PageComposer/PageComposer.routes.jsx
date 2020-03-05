@@ -1,5 +1,4 @@
 import React from 'react';
-import {registry} from '@jahia/ui-extender';
 import {useHistory} from 'react-router-dom';
 import {PrimaryNavItem} from '@jahia/moonstone';
 import {useTranslation} from 'react-i18next';
@@ -27,15 +26,17 @@ export const PageComposerGroup = () => {
     );
 };
 
-registry.add('primary-nav-item', 'pageComposerNavGroup', {
-    targets: ['nav-root-top:1'],
-    render: () => <PageComposerGroup/>
-});
+export const pageComposerRoutes = registry => {
+    registry.add('primary-nav-item', 'pageComposerNavGroup', {
+        targets: ['nav-root-top:1'],
+        render: () => <PageComposerGroup/>
+    });
 
-// Register wiokrflow component
-registry.add('route', 'pageComposerNavGroup', {
-    targets: ['nav-root-top'],
-    path: PATH,
-    defaultPath: PATH,
-    render: () => <PageComposer/>
-});
+    // Register wiokrflow component
+    registry.add('route', 'pageComposerNavGroup', {
+        targets: ['nav-root-top'],
+        path: PATH,
+        defaultPath: PATH,
+        render: () => <PageComposer/>
+    });
+};

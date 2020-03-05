@@ -1,1 +1,1 @@
-import './PageComposer/PageComposer.routes';
+import './PageComposer/PageComposer.register';
