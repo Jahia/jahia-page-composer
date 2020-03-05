@@ -6,6 +6,7 @@ import {useTranslation} from 'react-i18next';
 import Feather from '@jahia/moonstone/dist/icons/Feather';
 import PageComposer from './PageComposer';
 import {useSelector} from 'react-redux';
+import {pageComposerActions} from './PageComposer.actions';
 
 const PATH = '/page-composer';
 
@@ -39,3 +40,5 @@ registry.add('route', 'pageComposerNavGroup', {
     defaultPath: PATH,
     render: () => <PageComposer/>
 });
+
+pageComposerActions(registry);
