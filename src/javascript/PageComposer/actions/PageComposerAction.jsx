@@ -3,6 +3,10 @@ import {useNodeChecks} from '@jahia/data-helper';
 import {useSelector} from 'react-redux';
 import PropTypes from 'prop-types';
 
+const PATH_CONTENTS_AND_DESCENDANTS = '^/sites/((?!/).)+/contents/.+';
+const PATH_FILES_AND_DESCENDANTS = '^/sites/((?!/).)+/files/.+';
+const PATH_SYSTEM_SITE_AND_DESCENDANTS = '^/sites/systemsite/.+';
+
 export const PageComposerAction = ({context, render: Render, loading: Loading}) => {
     const {language} = useSelector(state => ({language: state.language}));
     const res = useNodeChecks(
@@ -10,7 +14,8 @@ export const PageComposerAction = ({context, render: Render, loading: Loading}) 
         {
             showOnNodeTypes: ['jnt:page', 'jmix:editorialContent', 'jnt:content'],
             requiredPermission: ['editModeAccess'],
-            getDisplayableNodePath: true
+            getDisplayableNodePath: true,
+            hideForPaths: [PATH_FILES_AND_DESCENDANTS, PATH_CONTENTS_AND_DESCENDANTS, PATH_SYSTEM_SITE_AND_DESCENDANTS]
         }
     );
 
