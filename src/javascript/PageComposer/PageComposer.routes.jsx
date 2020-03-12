@@ -9,7 +9,7 @@ import {useSelector} from 'react-redux';
 const PATH = '/page-composer';
 
 export const PageComposerGroup = () => {
-    const {t} = useTranslation();
+    const {t} = useTranslation('jahia-page-composer');
     const history = useHistory();
     const current = useSelector(state => ({language: state.language, site: state.site}));
     if (current.site === 'systemsite') {
@@ -21,7 +21,7 @@ export const PageComposerGroup = () => {
             role="page-composer-menu-item"
             isSelected={history.location.pathname.startsWith(PATH)}
             icon={<Feather/>}
-            label={t('jahia-ui-root:primaryNavigation.pageComposer.label')}
+            label={t('jahia-page-composer:label')}
             onClick={() => history.push(PATH)}/>
     );
 };
