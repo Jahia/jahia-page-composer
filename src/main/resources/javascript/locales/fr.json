@@ -1,11 +1,3 @@
 {
-  "userEntries" : {
-    "profile": {
-      "label": "FR My Profile",
-      "signOut": "FR Sign out"
-    },
-    "workflow": {
-      "label": "FR Workflow"
-    }
-  }
+  "label" : "Constructeur de Page"
 }
