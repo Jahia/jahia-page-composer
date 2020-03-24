@@ -45,7 +45,7 @@ let updateStoreAndHistory = function (pathFromChildIFrame, currentSiteKey, curre
 };
 
 const iFrameOnHistoryMessage = event => {
-    if (history !== null) {
+    if (history) {
         if (event.origin !== window.location.origin) {
             return;
         }
@@ -78,7 +78,7 @@ export default function () {
         return () => {
             window.removeEventListener('message', iFrameOnHistoryMessage, false);
         };
-    });
+    }, []);
 
     const iFrameOnLoad = () => {
         if (window.frames['page-composer-frame'] !== undefined) {
