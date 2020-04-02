@@ -4,8 +4,9 @@ import {useDispatch, useSelector} from 'react-redux';
 import {useHistory, useLocation} from 'react-router-dom';
 import {IframeRenderer} from '@jahia/ui-extender';
 
-let initialValue = function (location, siteKey, language) {
-    let mainResourcePath = `/cms/edit/default/${language}/sites/${siteKey}/home.html`;
+let initialValue = function (location, siteKey, language, path, lastVisitedSite) {
+    let subPath = (path === undefined || siteKey !== lastVisitedSite) ? '/home.html' : path;
+    let mainResourcePath = `/cms/edit/default/${language}/sites/${siteKey}${subPath}`;
     if (!location.pathname.endsWith('page-composer') && location.pathname.indexOf('/sites/') >= 0) {
         mainResourcePath = `/cms/edit/${location.pathname.substr(location.pathname.lastIndexOf('/default/'))}`;
     }
@@ -68,8 +69,8 @@ export default function () {
     const composerLocation = useLocation();
     history = useHistory();
     dispatch = useDispatch();
-    const current = useSelector(state => ({language: state.language, site: state.site}));
-    const [mainResourcePath] = useState(initialValue(composerLocation, current.site, current.language));
+    const current = useSelector(state => ({language: state.language, site: state.site, path: state.pagecomposer.path, lastVisitedSite: state.pagecomposer.site}));
+    const [mainResourcePath] = useState(initialValue(composerLocation, current.site, current.language, current.path, current.lastVisitedSite));
     useEffect(() => {
         if (window.frames['page-composer-frame'] !== undefined) {
             window.addEventListener('message', iFrameOnHistoryMessage, false);
