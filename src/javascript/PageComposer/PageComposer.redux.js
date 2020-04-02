@@ -51,15 +51,9 @@ let getSyncListener = store => () => {
                     }
 
                     if (data.path || data.params) {
-                        dispatch(pcSetPath({path: data.path, site: currentValueFromUrl.site}));
+                        dispatch(pcSetPath({path: data.path, lastVisitedSite: currentValueFromUrl.site}));
                     }
                 }));
-                console.log('pathname changed', store.getState(), currentValueFromUrl, data);
-            } else if ((previousValue.site !== currentValue.site && currentValueFromUrl.site !== currentValue.site) ||
-                (previousValue.language !== currentValue.language && currentValueFromUrl.language !== currentValue.language)
-            ) {
-                console.log('state changed', store.getState(), currentValueFromUrl);
-                store.dispatch(pcSetPath({path: undefined}));
             }
         }
     });

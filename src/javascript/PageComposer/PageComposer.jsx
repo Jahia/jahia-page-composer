@@ -69,7 +69,7 @@ export default function () {
     const composerLocation = useLocation();
     history = useHistory();
     dispatch = useDispatch();
-    const current = useSelector(state => ({language: state.language, site: state.site, path: state.pagecomposer.path, lastVisitedSite: state.pagecomposer.site}));
+    const current = useSelector(state => ({language: state.language, site: state.site, path: state.pagecomposer.path, lastVisitedSite: state.pagecomposer.lastVisitedSite}));
     const [mainResourcePath] = useState(initialValue(composerLocation, current.site, current.language, current.path, current.lastVisitedSite));
     useEffect(() => {
         if (window.frames['page-composer-frame'] !== undefined) {
