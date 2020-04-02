@@ -50,7 +50,7 @@ let getSyncListener = store => () => {
                         dispatch(registry.get('redux-reducer', 'language').actions.setLanguage(data.language));
                     }
 
-                    if (data.path || data.params) {
+                    if (data.path) {
                         dispatch(pcSetPath({path: data.path, lastVisitedSite: currentValueFromUrl.site}));
                     }
                 }));
