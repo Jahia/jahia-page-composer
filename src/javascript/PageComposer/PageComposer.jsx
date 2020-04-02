@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useRef} from 'react';
 import {registry} from '@jahia/ui-extender';
 import {useDispatch, useSelector} from 'react-redux';
 import {useHistory, useLocation} from 'react-router-dom';
@@ -70,7 +70,7 @@ export default function () {
     history = useHistory();
     dispatch = useDispatch();
     const current = useSelector(state => ({language: state.language, site: state.site, path: state.pagecomposer.path, lastVisitedSite: state.pagecomposer.lastVisitedSite}));
-    const [mainResourcePath] = useState(initialValue(composerLocation, current.site, current.language, current.path, current.lastVisitedSite));
+    const mainResourcePath = useRef(initialValue(composerLocation, current.site, current.language, current.path, current.lastVisitedSite));
     useEffect(() => {
         if (window.frames['page-composer-frame'] !== undefined) {
             window.addEventListener('message', iFrameOnHistoryMessage, false);
@@ -96,7 +96,7 @@ export default function () {
     }
 
     return (
-        <IframeRenderer url={window.contextJsParameters.contextPath + mainResourcePath}
+        <IframeRenderer url={window.contextJsParameters.contextPath + mainResourcePath.current}
                         id="page-composer-frame"
                         onLoad={iFrameOnLoad}
         />
