@@ -35,6 +35,7 @@
     "@jahia/data-helper": "^0.0.14",
     "@jahia/moonstone": "^0.11.0",
     "@jahia/ui-extender": "^0.4.0",
+    "connected-react-router": "^6.8.0",
     "graphql-tag": "^2.10.3",
     "prop-types": "^15.7.2",
     "react": "^16.10.2",
@@ -43,7 +44,8 @@
     "react-i18next": "^11.2.2",
     "react-redux": "^7.2.0",
     "react-router": "^5.1.2",
-    "react-router-dom": "^5.1.2"
+    "react-router-dom": "^5.1.2",
+    "redux-actions": "^2.6.5"
   },
   "devDependencies": {
     "@babel/cli": "^7.6.2",
