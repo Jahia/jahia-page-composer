@@ -1,8 +1,7 @@
 import React, {useEffect, useRef} from 'react';
-import {registry} from '@jahia/ui-extender';
+import {IframeRenderer, registry} from '@jahia/ui-extender';
 import {useDispatch, useSelector} from 'react-redux';
 import {useHistory, useLocation} from 'react-router-dom';
-import {IframeRenderer} from '@jahia/ui-extender';
 
 let initialValue = function (location, siteKey, language, path, lastVisitedSite) {
     let subPath = (path === undefined || siteKey !== lastVisitedSite) ? '/home.html' : path;
@@ -32,15 +31,21 @@ let getPathFromChildIFrame = function () {
 let updateStoreAndHistory = function (pathFromChildIFrame, currentSiteKey, currentLanguage) {
     if (pathFromChildIFrame !== '') {
         let newPath = history.location.pathname.replace(/page-composer.*/gi, 'page-composer' + pathFromChildIFrame);
-        history.replace(newPath);
-        let siteKey = pathFromChildIFrame.match(siteKeyRegexp)[1];
-        let language = pathFromChildIFrame.match(languageRegexp)[1];
-        if (currentSiteKey !== siteKey) {
-            dispatch(registry.get('redux-reducer', 'site').actions.setSite(siteKey));
-        }
+        if (history.location.pathname !== newPath) {
+            history.replace(newPath);
+            let siteKey = pathFromChildIFrame.match(siteKeyRegexp)[1];
+            let language = pathFromChildIFrame.match(languageRegexp)[1];
+            if (currentSiteKey !== siteKey) {
+                dispatch(registry.get('redux-reducer', 'site').actions.setSite(siteKey));
+            }
 
-        if (currentLanguage !== language) {
-            dispatch(registry.get('redux-reducer', 'language').actions.setLanguage(language));
+            if (currentLanguage !== language) {
+                dispatch(registry.get('redux-reducer', 'language').actions.setLanguage(language));
+            }
+
+            let splitElement = newPath.split(siteKey)[1];
+            dispatch(registry.get('redux-reducer', 'pagecomposer').actions.pcSetPath(splitElement));
+            dispatch(registry.get('redux-reducer', 'pagecomposer').actions.pcSetLastVisitedSite(siteKey));
         }
     }
 };
@@ -69,7 +74,12 @@ export default function () {
     const composerLocation = useLocation();
     history = useHistory();
     dispatch = useDispatch();
-    const current = useSelector(state => ({language: state.language, site: state.site, path: state.pagecomposer.path, lastVisitedSite: state.pagecomposer.lastVisitedSite}));
+    const current = useSelector(state => ({
+        language: state.language,
+        site: state.site,
+        path: state.pagecomposer.path,
+        lastVisitedSite: state.pagecomposer.lastVisitedSite
+    }));
     const mainResourcePath = useRef(initialValue(composerLocation, current.site, current.language, current.path, current.lastVisitedSite));
     useEffect(() => {
         if (window.frames['page-composer-frame'] !== undefined) {
