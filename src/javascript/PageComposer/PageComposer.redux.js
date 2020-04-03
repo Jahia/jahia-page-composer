@@ -29,7 +29,6 @@ export const pageComposerRedux = () => {
     }, currentValueFromUrl.site);
     registry.add('redux-reducer', 'pagecomposer', {
         targets: ['root'],
-        reducer: combineReducers({path: pathReducer, lastVisitedSite: lastVisitedSiteReducer}),
-        actions: {pcSetPath, pcSetLastVisitedSite}
+        reducer: combineReducers({path: pathReducer, lastVisitedSite: lastVisitedSiteReducer})
     });
 };
