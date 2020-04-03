@@ -2,6 +2,7 @@ import React, {useEffect, useRef} from 'react';
 import {IframeRenderer, registry} from '@jahia/ui-extender';
 import {useDispatch, useSelector} from 'react-redux';
 import {useHistory, useLocation} from 'react-router-dom';
+import {pcSetLastVisitedSite, pcSetPath} from './PageComposer.redux';
 
 let initialValue = function (location, siteKey, language, path, lastVisitedSite) {
     let subPath = (path === undefined || siteKey !== lastVisitedSite) ? '/home.html' : path;
@@ -44,8 +45,8 @@ let updateStoreAndHistory = function (pathFromChildIFrame, currentSiteKey, curre
             }
 
             let splitElement = newPath.split(siteKey)[1];
-            dispatch(registry.get('redux-reducer', 'pagecomposer').actions.pcSetPath(splitElement));
-            dispatch(registry.get('redux-reducer', 'pagecomposer').actions.pcSetLastVisitedSite(siteKey));
+            dispatch(pcSetPath(splitElement));
+            dispatch(pcSetLastVisitedSite(siteKey));
         }
     }
 };
