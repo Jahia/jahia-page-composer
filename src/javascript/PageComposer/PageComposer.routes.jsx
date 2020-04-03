@@ -2,7 +2,7 @@ import React from 'react';
 import {useHistory} from 'react-router-dom';
 import {PrimaryNavItem} from '@jahia/moonstone';
 import {useTranslation} from 'react-i18next';
-import Feather from '@jahia/moonstone/dist/icons/Feather';
+import JContent from '@jahia/moonstone/dist/icons/JContent';
 import PageComposer from './PageComposer';
 import {useSelector} from 'react-redux';
 
@@ -20,7 +20,7 @@ export const PageComposerGroup = () => {
         <PrimaryNavItem
             role="page-composer-menu-item"
             isSelected={history.location.pathname.startsWith(PATH)}
-            icon={<Feather/>}
+            icon={<JContent/>}
             label={t('jahia-page-composer:label')}
             onClick={() => history.push(PATH)}/>
     );
