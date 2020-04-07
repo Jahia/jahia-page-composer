@@ -33,7 +33,7 @@
   },
   "dependencies": {
     "@jahia/data-helper": "^0.0.14",
-    "@jahia/moonstone": "^0.11.0",
+    "@jahia/moonstone": "^0.15.5",
     "@jahia/ui-extender": "^0.4.0",
     "connected-react-router": "^6.8.0",
     "graphql-tag": "^2.10.3",
