@@ -3,6 +3,7 @@ import {IframeRenderer, registry} from '@jahia/ui-extender';
 import {useDispatch, useSelector} from 'react-redux';
 import {useHistory, useLocation} from 'react-router-dom';
 import {pcSetLastVisitedSite, pcSetPath} from './PageComposer.redux';
+import {batch} from 'react-redux';
 
 let initialValue = function (location, siteKey, language, path, lastVisitedSite) {
     let subPath = (path === undefined || siteKey !== lastVisitedSite) ? '/home.html' : path;
@@ -29,25 +30,23 @@ let getPathFromChildIFrame = function () {
     return '';
 };
 
-let updateStoreAndHistory = function (pathFromChildIFrame, currentSiteKey, currentLanguage) {
+let updateStoreAndHistory = function (pathFromChildIFrame) {
     if (pathFromChildIFrame !== '') {
         let newPath = history.location.pathname.replace(/page-composer.*/gi, 'page-composer' + pathFromChildIFrame);
-        if (history.location.pathname !== newPath) {
-            history.replace(newPath);
+        batch(() => {
+            if (history.location.pathname !== newPath) {
+                history.replace(newPath);
+                let siteKey = pathFromChildIFrame.match(siteKeyRegexp)[1];
+                let splitElement = newPath.split(siteKey)[1];
+                dispatch(pcSetPath(splitElement));
+                dispatch(pcSetLastVisitedSite(siteKey));
+            }
+
             let siteKey = pathFromChildIFrame.match(siteKeyRegexp)[1];
+            dispatch(registry.get('redux-action', 'setSite').action(siteKey));
             let language = pathFromChildIFrame.match(languageRegexp)[1];
-            if (currentSiteKey !== siteKey) {
-                dispatch(registry.get('redux-reducer', 'site').actions.setSite(siteKey));
-            }
-
-            if (currentLanguage !== language) {
-                dispatch(registry.get('redux-reducer', 'language').actions.setLanguage(language));
-            }
-
-            let splitElement = newPath.split(siteKey)[1];
-            dispatch(pcSetPath(splitElement));
-            dispatch(pcSetLastVisitedSite(siteKey));
-        }
+            dispatch(registry.get('redux-action', 'setLanguage').action(language));
+        });
     }
 };
 
@@ -59,11 +58,7 @@ const iFrameOnHistoryMessage = event => {
 
         if (event.data !== null && event.data.msg !== null) {
             if (event.data.msg === 'edit frame history updated') {
-                let currentSiteKey = history.location.pathname.match(siteKeyRegexp)[1];
-                let currentLanguage = history.location.pathname.match(languageRegexp)[1];
-                let pathFromChildIFrame = getPathFromChildIFrame();
-
-                updateStoreAndHistory(pathFromChildIFrame, currentSiteKey, currentLanguage);
+                updateStoreAndHistory(getPathFromChildIFrame());
             } else if (event.data.msg === 'setTitle') {
                 document.title = event.data.title;
             }
@@ -95,10 +90,7 @@ export default function () {
     const iFrameOnLoad = () => {
         if (window.frames['page-composer-frame'] !== undefined) {
             window.addEventListener('message', iFrameOnHistoryMessage, false);
-            let currentSiteKey = location.pathname.endsWith('page-composer') ? '' : history.location.pathname.match(siteKeyRegexp)[1];
-            let currentLanguage = location.pathname.endsWith('page-composer') ? '' : history.location.pathname.match(languageRegexp)[1];
-            let pathFromChildIFrame = getPathFromChildIFrame();
-            updateStoreAndHistory(pathFromChildIFrame, currentSiteKey, currentLanguage);
+            updateStoreAndHistory(getPathFromChildIFrame());
         }
     };
 
