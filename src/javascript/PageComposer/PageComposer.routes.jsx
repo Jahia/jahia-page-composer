@@ -32,11 +32,10 @@ export const pageComposerRoutes = registry => {
         render: () => <PageComposerGroup/>
     });
 
-    // Register wiokrflow component
-    registry.add('route', 'pageComposerNavGroup', {
+    registry.add('route', 'pageComposerRoute', {
         targets: ['main'],
         path: PATH,
         defaultPath: PATH,
-        render: () => <PageComposer/>
+        render: () => registry.get('route', 'requireCoreLicenseRoot').render() || <PageComposer/>
     });
 };
