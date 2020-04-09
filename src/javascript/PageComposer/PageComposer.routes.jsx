@@ -34,7 +34,7 @@ export const pageComposerRoutes = registry => {
 
     // Register wiokrflow component
     registry.add('route', 'pageComposerNavGroup', {
-        targets: ['nav-root-top'],
+        targets: ['main'],
         path: PATH,
         defaultPath: PATH,
         render: () => <PageComposer/>
