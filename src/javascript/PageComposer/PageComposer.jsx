@@ -24,7 +24,11 @@ let getPathFromChildIFrame = function () {
     if (window.frames['page-composer-frame'] !== undefined) {
         let framepathname = window.frames['page-composer-frame'].contentWindow.location.pathname;
 
-        return framepathname.substr(framepathname.lastIndexOf('/default/'));
+        if (framepathname.indexOf('/default/') !== -1) {
+            return framepathname.substr(framepathname.lastIndexOf('/default/'));
+        }
+
+        return framepathname;
     }
 
     return '';
