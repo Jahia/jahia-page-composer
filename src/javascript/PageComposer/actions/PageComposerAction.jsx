@@ -14,6 +14,7 @@ export const PageComposerAction = ({context, render: Render, loading: Loading}) 
         {
             requiredPermission: ['jContentAccess'],
             getDisplayableNodePath: true,
+            hideOnNodeTypes: ['jnt:navMenuText'],
             hideForPaths: [PATH_FILES_AND_DESCENDANTS, PATH_CONTENTS_AND_DESCENDANTS, PATH_SYSTEM_SITE_AND_DESCENDANTS],
             ...context
         }
