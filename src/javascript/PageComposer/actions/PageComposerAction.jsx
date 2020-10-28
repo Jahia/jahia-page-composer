@@ -7,21 +7,20 @@ const PATH_CONTENTS_AND_DESCENDANTS = '^/sites/((?!/).)+/contents(/(.+)?)?';
 const PATH_FILES_AND_DESCENDANTS = '^/sites/((?!/).)+/files(/(.+)?)?';
 const PATH_SYSTEM_SITE_AND_DESCENDANTS = '^/sites/systemsite(/(.+)?)?';
 
-export const PageComposerAction = ({context, render: Render, loading: Loading}) => {
+export const PageComposerAction = ({path, render: Render, loading: Loading, ...others}) => {
     const {language} = useSelector(state => ({language: state.language}));
     const res = useNodeChecks(
-        {path: context.path},
+        {path},
         {
             requiredPermission: ['jContentAccess'],
             getDisplayableNodePath: true,
             hideOnNodeTypes: ['jnt:navMenuText'],
-            hideForPaths: [PATH_FILES_AND_DESCENDANTS, PATH_CONTENTS_AND_DESCENDANTS, PATH_SYSTEM_SITE_AND_DESCENDANTS],
-            ...context
+            hideForPaths: [PATH_FILES_AND_DESCENDANTS, PATH_CONTENTS_AND_DESCENDANTS, PATH_SYSTEM_SITE_AND_DESCENDANTS]
         }
     );
 
     if (res.loading && Loading) {
-        return <Loading context={context}/>;
+        return <Loading {...others}/>;
     }
 
     if (!res.node) {
@@ -29,19 +28,18 @@ export const PageComposerAction = ({context, render: Render, loading: Loading}) 
     }
 
     return (
-        <Render context={{
-            ...context,
-            isVisible: res.checksResult,
-            enabled: res.checksResult,
-            onClick: () => {
-                window.open(window.contextJsParameters.contextPath + '/cms/edit/default/' + language + res.node.displayableNode.path + '.html', '_blank');
-            }
-        }}/>
+        <Render {...others}
+                isVisible={res.checksResult}
+                enabled={res.checksResult}
+                onClick={() => {
+                    window.open(window.contextJsParameters.contextPath + '/cms/edit/default/' + language + res.node.displayableNode.path + '.html', '_blank');
+                }}
+        />
     );
 };
 
 PageComposerAction.propTypes = {
-    context: PropTypes.object.isRequired,
+    path: PropTypes.string.isRequired,
     render: PropTypes.func.isRequired,
     loading: PropTypes.func
 };
