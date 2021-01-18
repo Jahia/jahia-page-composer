@@ -2,7 +2,7 @@ import {createActions, handleActions} from 'redux-actions';
 import {registry} from '@jahia/ui-extender';
 import {combineReducers} from 'redux';
 
-export const {pcSetPath, pcSetLastVisitedSite} = createActions('PC_SET_PATH', 'PC_SET_LAST_VISITED_SITE');
+export const {pcSetCurrentPage, pcSetActive, pcSetPath, pcSetLastVisitedSite} = createActions('PC_SET_CURRENT_PAGE', 'PC_SET_ACTIVE', 'PC_SET_PATH', 'PC_SET_LAST_VISITED_SITE');
 
 const extractParamsFromUrl = pathname => {
     if (pathname.startsWith('/page-composer/')) {
@@ -24,11 +24,17 @@ export const pageComposerRedux = () => {
     const pathReducer = handleActions({
         [pcSetPath]: (state, action) => action.payload
     }, currentValueFromUrl.path);
+    const currentPageReducer = handleActions({
+        [pcSetCurrentPage]: (state, action) => action.payload
+    }, {});
+    const isActiveReducer = handleActions({
+        [pcSetActive]: (state, action) => action.payload
+    }, false);
     const lastVisitedSiteReducer = handleActions({
         [pcSetLastVisitedSite]: (state, action) => action.payload
     }, currentValueFromUrl.site);
     registry.add('redux-reducer', 'pagecomposer', {
         targets: ['root'],
-        reducer: combineReducers({path: pathReducer, lastVisitedSite: lastVisitedSiteReducer})
+        reducer: combineReducers({active: isActiveReducer, currentPage: currentPageReducer, path: pathReducer, lastVisitedSite: lastVisitedSiteReducer})
     });
 };
