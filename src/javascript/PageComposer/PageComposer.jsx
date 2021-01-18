@@ -2,7 +2,7 @@ import React, {useEffect, useRef} from 'react';
 import {IframeRenderer, registry} from '@jahia/ui-extender';
 import {useDispatch, useSelector} from 'react-redux';
 import {useHistory, useLocation} from 'react-router-dom';
-import {pcSetLastVisitedSite, pcSetPath} from './PageComposer.redux';
+import {pcSetCurrentPage, pcSetActive, pcSetLastVisitedSite, pcSetPath} from './PageComposer.redux';
 import {batch} from 'react-redux';
 
 let initialValue = function (location, siteKey, language, path, lastVisitedSite) {
@@ -22,34 +22,57 @@ const siteKeyRegexp = /\/sites\/(.[^/]*)\//;
 
 let getPathFromChildIFrame = function () {
     if (window.frames['page-composer-frame'] !== undefined) {
-        let framepathname = window.frames['page-composer-frame'].contentWindow.location.pathname;
+        const location = window.frames['page-composer-frame'].contentWindow.location;
+        let framepathname = location.pathname;
 
         if (framepathname.indexOf('/default/') !== -1) {
-            return framepathname.substr(framepathname.lastIndexOf('/default/'));
+            return {
+                pathName: framepathname.substr(framepathname.lastIndexOf('/default/')),
+                queryString: location.search
+            };
         }
 
-        return framepathname;
+        return {pathName: framepathname, queryString: location.search};
     }
-
-    return '';
 };
 
 let updateStoreAndHistory = function (pathFromChildIFrame) {
-    if (pathFromChildIFrame !== '') {
-        let newPath = history.location.pathname.replace(/page-composer.*/gi, 'page-composer' + pathFromChildIFrame);
+    if (pathFromChildIFrame) {
+        const {pathName, queryString} = pathFromChildIFrame;
+        let newPath = history.location.pathname.replace(/page-composer.*/gi, 'page-composer' + pathName);
         batch(() => {
+            if (!pathName.match(siteKeyRegexp)) {
+                // Site cannot be resolved, do nothing
+                return;
+            }
+
+            let siteKey = pathName.match(siteKeyRegexp)[1];
+            let splitElement = newPath.split(siteKey)[1];
+            const pageName = splitElement.split('/').slice(-1).pop();
+            const pageNameArray = pageName.split('.');
+            const templateType = pageNameArray.pop();
+            let template = 'default';
+            if (pageNameArray.length > 1) {
+                template = pageNameArray.pop();
+            }
+
+            const pagePath = '/sites/' + siteKey + [...splitElement.split('/').slice(0, -1), pageNameArray.join('.')].join('/');
+
             if (history.location.pathname !== newPath) {
                 history.replace(newPath);
-                let siteKey = pathFromChildIFrame.match(siteKeyRegexp)[1];
-                let splitElement = newPath.split(siteKey)[1];
                 dispatch(pcSetPath(splitElement));
                 dispatch(pcSetLastVisitedSite(siteKey));
             }
 
-            let siteKey = pathFromChildIFrame.match(siteKeyRegexp)[1];
             dispatch(registry.get('redux-action', 'setSite').action(siteKey));
-            let language = pathFromChildIFrame.match(languageRegexp)[1];
+            let language = pathName.match(languageRegexp)[1];
             dispatch(registry.get('redux-action', 'setLanguage').action(language));
+            dispatch(pcSetCurrentPage({
+                path: pagePath,
+                templateType,
+                template,
+                queryString
+            }));
         });
     }
 };
@@ -80,6 +103,18 @@ export default function () {
         path: state.pagecomposer.path,
         lastVisitedSite: state.pagecomposer.lastVisitedSite
     }));
+    useEffect(() => {
+        // Store initial location
+        if (!current.path) {
+            updateStoreAndHistory({pathName: window.location.pathname, queryString: window.location.search});
+        }
+
+        dispatch(pcSetActive(true));
+        return () => {
+            // Unload page composer
+            dispatch(pcSetActive(false));
+        };
+    }, [current.path]);
     const mainResourcePath = useRef(initialValue(composerLocation, current.site, current.language, current.path, current.lastVisitedSite));
     useEffect(() => {
         if (window.frames['page-composer-frame'] !== undefined) {
