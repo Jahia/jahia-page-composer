@@ -1,5 +1,6 @@
 import React, {useEffect, useRef} from 'react';
-import {IframeRenderer, registry} from '@jahia/ui-extender';
+import {IframeRenderer} from '@jahia/jahia-ui-root';
+import {registry} from '@jahia/ui-extender';
 import {useDispatch, useSelector} from 'react-redux';
 import {useHistory, useLocation} from 'react-router-dom';
 import {pcSetCurrentPage, pcSetActive, pcSetLastVisitedSite, pcSetPath} from './PageComposer.redux';

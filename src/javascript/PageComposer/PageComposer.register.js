@@ -3,6 +3,8 @@ import {pageComposerRoutes} from './PageComposer.routes';
 import {pageComposerRedux} from './PageComposer.redux';
 import {registry} from '@jahia/ui-extender';
 
-pageComposerRedux();
-pageComposerRoutes(registry);
-pageComposerActions(registry);
+export default function () {
+    pageComposerRedux();
+    pageComposerRoutes(registry);
+    pageComposerActions(registry);
+}
