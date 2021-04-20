@@ -29,7 +29,7 @@ export const PageComposerGroup = () => {
 export const pageComposerRoutes = registry => {
     registry.add('primary-nav-item', 'pageComposerNavGroup', {
         targets: ['nav-root-top:1'],
-        requiredPermission: 'jContentAccess',
+        requiredPermission: 'pageComposerAccess',
         render: () => <PageComposerGroup/>
     });
 

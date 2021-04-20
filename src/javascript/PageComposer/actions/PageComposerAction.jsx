@@ -12,7 +12,7 @@ export const PageComposerAction = ({path, render: Render, loading: Loading, ...o
     const res = useNodeChecks(
         {path},
         {
-            requiredPermission: ['jContentAccess'],
+            requiredPermission: ['pageComposerAccess'],
             getDisplayableNodePath: true,
             hideOnNodeTypes: ['jnt:navMenuText'],
             hideForPaths: [PATH_FILES_AND_DESCENDANTS, PATH_CONTENTS_AND_DESCENDANTS, PATH_SYSTEM_SITE_AND_DESCENDANTS]
