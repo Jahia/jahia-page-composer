@@ -37,6 +37,7 @@ export const pageComposerRoutes = registry => {
         targets: ['main'],
         path: PATH,
         defaultPath: PATH,
+        requiredPermission: 'pageComposerAccess',
         render: () => registry.get('route', 'requireCoreLicenseRoot').render() || <PageComposer/>
     });
 };
