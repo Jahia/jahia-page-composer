@@ -162,7 +162,6 @@ export default function () {
         pcSetPath(path);
     }
 
-
     return (
         <IframeRenderer url={window.contextJsParameters.contextPath + mainResourcePath.current}
                         id="page-composer-frame"
