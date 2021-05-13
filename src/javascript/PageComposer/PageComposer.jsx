@@ -1,13 +1,15 @@
 import React, {useEffect, useRef} from 'react';
 import {IframeRenderer} from '@jahia/jahia-ui-root';
 import {registry} from '@jahia/ui-extender';
-import {useDispatch, useSelector} from 'react-redux';
+import {batch, useDispatch, useSelector} from 'react-redux';
 import {useHistory, useLocation} from 'react-router-dom';
-import {pcSetCurrentPage, pcSetActive, pcSetLastVisitedSite, pcSetPath} from './PageComposer.redux';
-import {batch} from 'react-redux';
+import {useQuery} from '@apollo/react-hooks';
+import {pcSetActive, pcSetCurrentPage, pcSetLastVisitedSite, pcSetPath} from './PageComposer.redux';
+import {GetHomePage} from './PageComposer.gql';
 
+const placeholder = 'fake-home-placeholder';
 let initialValue = function (location, siteKey, language, path, lastVisitedSite) {
-    let subPath = (path === undefined || siteKey !== lastVisitedSite) ? '/home.html' : path;
+    let subPath = (path === undefined || siteKey !== lastVisitedSite) ? placeholder : path;
     let mainResourcePath = `/cms/edit/default/${language}/sites/${siteKey}${subPath}`;
     if (!location.pathname.endsWith('page-composer') && location.pathname.indexOf('/sites/') >= 0) {
         mainResourcePath = `/cms/edit/${location.pathname.substr(location.pathname.lastIndexOf('/default/'))}`;
@@ -98,12 +100,14 @@ export default function () {
     const composerLocation = useLocation();
     history = useHistory();
     dispatch = useDispatch();
+
     const current = useSelector(state => ({
         language: state.language,
         site: state.site,
         path: state.pagecomposer.path,
         lastVisitedSite: state.pagecomposer.lastVisitedSite
     }));
+
     useEffect(() => {
         // Store initial location
         if (!current.path) {
@@ -116,7 +120,7 @@ export default function () {
             dispatch(pcSetActive(false));
         };
     }, [current.path]);
-    const mainResourcePath = useRef(initialValue(composerLocation, current.site, current.language, current.path, current.lastVisitedSite));
+
     useEffect(() => {
         if (window.frames['page-composer-frame'] !== undefined) {
             window.addEventListener('message', iFrameOnHistoryMessage, false);
@@ -136,6 +140,26 @@ export default function () {
 
     if (current.site === 'systemsite') {
         return <h2 style={{color: 'grey'}}>You need to create a site to see this page</h2>;
+    }
+
+    const mainResourcePath = useRef(initialValue(composerLocation, current.site, current.language, current.path, current.lastVisitedSite));
+
+    const {error, data, loading} = useQuery(GetHomePage, {
+        skip: current.path || current.site === current.lastVisitedSite,
+        variables: {
+            query: `SELECT * FROM [jnt:page] where ischildnode('/sites/${current.site}') and [j:isHomePage]=true`
+        }
+    });
+
+    if (loading) {
+        return <></>;
+    }
+
+    if (mainResourcePath.current.indexOf(placeholder) !== -1 && data && !current.path && !error) {
+        const path = mainResourcePath.current.replace(placeholder,
+            `/${data.jcr.nodesByQuery.nodes[0].name}.html`);
+        mainResourcePath.current = path;
+        pcSetPath(path);
     }
 
     return (
