@@ -8,6 +8,7 @@ import {pcSetActive, pcSetCurrentPage, pcSetLastVisitedSite, pcSetPath} from './
 import {GetHomePage} from './PageComposer.gql';
 
 const placeholder = 'fake-home-placeholder';
+
 let initialValue = function (location, siteKey, language, path, lastVisitedSite) {
     let subPath = (path === undefined || siteKey !== lastVisitedSite) ? placeholder : path;
     let mainResourcePath = `/cms/edit/default/${language}/sites/${siteKey}${subPath}`;
@@ -50,20 +51,21 @@ let updateStoreAndHistory = function (pathFromChildIFrame) {
             }
 
             let siteKey = pathName.match(siteKeyRegexp)[1];
-            let splitElement = newPath.split(siteKey)[1];
-            const pageName = splitElement.split('/').slice(-1).pop();
-            const pageNameArray = pageName.split('.');
-            const templateType = pageNameArray.pop();
-            let template = 'default';
-            if (pageNameArray.length > 1) {
-                template = pageNameArray.pop();
-            }
+            let [, ...rest] = newPath.split(siteKey);
+            const relSitePath = rest.join(siteKey); // Path relative to site URL
+            const parentPath = relSitePath.substring(0, relSitePath.lastIndexOf('/'));
+            const pageName = relSitePath.substring(relSitePath.lastIndexOf('/') + 1);
 
-            const pagePath = '/sites/' + siteKey + [...splitElement.split('/').slice(0, -1), pageNameArray.join('.')].join('/');
+            /* Parse pageName */
+            const pageNameArray = pageName.split('.');
+            const templateType = pageNameArray.pop(); // Assumption: template type exists at the end
+            const templateName = (pageNameArray.length > 1) ? pageNameArray.pop() : 'default';
+            const nodeName = pageNameArray.join('.');
+            const nodePath = `/sites/${siteKey}${parentPath}/${nodeName}`;
 
             if (history.location.pathname !== newPath) {
                 history.replace(newPath);
-                dispatch(pcSetPath(splitElement));
+                dispatch(pcSetPath(relSitePath));
                 dispatch(pcSetLastVisitedSite(siteKey));
             }
 
@@ -71,9 +73,9 @@ let updateStoreAndHistory = function (pathFromChildIFrame) {
             let language = pathName.match(languageRegexp)[1];
             dispatch(registry.get('redux-action', 'setLanguage').action(language));
             dispatch(pcSetCurrentPage({
-                path: pagePath,
+                path: nodePath,
                 templateType,
-                template,
+                template: templateName,
                 queryString
             }));
         });
