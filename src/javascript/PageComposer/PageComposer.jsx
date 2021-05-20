@@ -9,15 +9,15 @@ import {GetHomePage} from './PageComposer.gql';
 
 const placeholder = 'fake-home-placeholder';
 
-let initialValue = function (location, siteKey, language, path, lastVisitedSite) {
-    let subPath = (path === undefined || siteKey !== lastVisitedSite) ? placeholder : path;
-    let mainResourcePath = `/cms/edit/default/${language}/sites/${siteKey}${subPath}`;
+function initialValue(location, {site, language, path, lastVisitedSite}) {
+    let subPath = (path === undefined || site !== lastVisitedSite) ? placeholder : path;
+    let mainResourcePath = `/cms/edit/default/${language}/sites/${site}${subPath}`;
     if (!location.pathname.endsWith('page-composer') && location.pathname.indexOf('/sites/') >= 0) {
         mainResourcePath = `/cms/edit/${location.pathname.substr(location.pathname.lastIndexOf('/default/'))}`;
     }
 
     return mainResourcePath + '?redirect=false';
-};
+}
 
 let history = null;
 let dispatch = null;
@@ -144,7 +144,7 @@ export default function () {
         return <h2 style={{color: 'grey'}}>You need to create a site to see this page</h2>;
     }
 
-    const mainResourcePath = useRef(initialValue(composerLocation, current.site, current.language, current.path, current.lastVisitedSite));
+    const mainResourcePath = useRef(initialValue(composerLocation, current));
 
     const {error, data, loading} = useQuery(GetHomePage, {
         skip: current.path || current.site === current.lastVisitedSite,
