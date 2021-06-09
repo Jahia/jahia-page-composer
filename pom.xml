@@ -66,7 +66,7 @@
 
     <properties>
         <jahia-module-type>system</jahia-module-type>
-        <jahia-module-signature>MC0CFQCMRHlGY43vsB7yXM66TT+d1JN83AIUaJN0jPkHA8vVn83GG9+EfCSK6w8=</jahia-module-signature>
+        <jahia-module-signature>MCwCFC9YMhtCSqkDAkmj5bwLwWqL6R3WAhRg07yD6y4nuqlcg4LbZ+r7zlehzA==</jahia-module-signature>
         <yarn.arguments>build:production</yarn.arguments>
     </properties>
 
