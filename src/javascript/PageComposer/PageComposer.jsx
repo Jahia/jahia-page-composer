@@ -103,10 +103,11 @@ export default function () {
     history = useHistory();
     dispatch = useDispatch();
 
+    // Do not recover from lastVisitedPath in case site have been switched in an other app.
     const current = useSelector(state => ({
         language: state.language,
         site: state.site,
-        path: state.pagecomposer.path,
+        path: state.pagecomposer.lastVisitedSite === state.site ? state.pagecomposer.path : undefined,
         lastVisitedSite: state.pagecomposer.lastVisitedSite
     }));
 
