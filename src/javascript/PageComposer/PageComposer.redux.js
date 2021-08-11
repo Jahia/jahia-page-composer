@@ -47,7 +47,10 @@ export const pageComposerRedux = () => {
     });
     registry.add('redux-reducer', 'pagecomposerSite', {
         targets: ['site:2'],
-        reducer: siteReducer}
-    );
-    registry.add('redux-reducer', 'pageComposerLanguage', {targets: ['language:2'], reducer: languageReducer});
+        reducer: siteReducer
+    });
+    registry.add('redux-reducer', 'pageComposerLanguage', {
+        targets: ['language:2'],
+        reducer: languageReducer
+    });
 };
