@@ -4,6 +4,8 @@ import {combineReducers} from 'redux';
 
 export const {pcSetCurrentPage, pcSetActive, pcSetPath, pcSetLastVisitedSite} = createActions('PC_SET_CURRENT_PAGE', 'PC_SET_ACTIVE', 'PC_SET_PATH', 'PC_SET_LAST_VISITED_SITE');
 
+const ROUTER_REDUX_ACTION = '@@router/LOCATION_CHANGE';
+
 const extractParamsFromUrl = pathname => {
     if (pathname.startsWith('/page-composer/')) {
         let [, , , language, , site, ...pathElements] = pathname.split('/');
@@ -30,11 +32,25 @@ export const pageComposerRedux = () => {
     const isActiveReducer = handleActions({
         [pcSetActive]: (state, action) => action.payload
     }, false);
+    let siteReducer = handleActions({
+        [ROUTER_REDUX_ACTION]: (state, action) => action.payload.location.pathname.startsWith('/page-composer/') ? extractParamsFromUrl(action.payload.location.pathname).site : state
+    }, '');
+    let languageReducer = handleActions({
+        [ROUTER_REDUX_ACTION]: (state, action) => action.payload.location.pathname.startsWith('/page-composer/') ? extractParamsFromUrl(action.payload.location.pathname).language : state
+    }, '');
     const lastVisitedSiteReducer = handleActions({
         [pcSetLastVisitedSite]: (state, action) => action.payload
     }, currentValueFromUrl.site);
     registry.add('redux-reducer', 'pagecomposer', {
         targets: ['root'],
         reducer: combineReducers({active: isActiveReducer, currentPage: currentPageReducer, path: pathReducer, lastVisitedSite: lastVisitedSiteReducer})
+    });
+    registry.add('redux-reducer', 'pagecomposerSite', {
+        targets: ['site:2'],
+        reducer: siteReducer
+    });
+    registry.add('redux-reducer', 'pageComposerLanguage', {
+        targets: ['language:2'],
+        reducer: languageReducer
     });
 };
