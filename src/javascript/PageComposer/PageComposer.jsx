@@ -12,8 +12,8 @@ const placeholder = 'fake-home-placeholder';
 function initialValue(location, {site, language, path, lastVisitedSite}) {
     let subPath = (path === undefined || site !== lastVisitedSite) ? placeholder : path;
     let mainResourcePath = `/cms/edit/default/${language}/sites/${site}${subPath}`;
-    if (!location.pathname.endsWith('page-composer') && location.pathname.indexOf('/sites/') >= 0) {
-        mainResourcePath = `/cms/edit/${location.pathname.substr(location.pathname.lastIndexOf('/default/'))}`;
+    if (location && !location.pathname.endsWith('page-composer') && location.pathname.indexOf('/sites/') !== -1) {
+        mainResourcePath = `/cms/edit${location.pathname.substr(location.pathname.lastIndexOf('/default/'))}`;
     }
 
     return mainResourcePath + '?redirect=false';
@@ -88,7 +88,7 @@ const iFrameOnHistoryMessage = event => {
             return;
         }
 
-        if (event.data !== null && event.data.msg !== null) {
+        if (event.source.app === 'page-composer' && event.data !== null && event.data.msg !== null) {
             if (event.data.msg === 'edit frame history updated') {
                 updateStoreAndHistory(getPathFromChildIFrame());
             } else if (event.data.msg === 'setTitle') {
@@ -112,16 +112,18 @@ export default function () {
     }));
 
     useEffect(() => {
-        // Store initial location
-        if (!current.path) {
-            updateStoreAndHistory({pathName: window.location.pathname, queryString: window.location.search});
-        }
+        // Path changes via redux action, construct new path
+        if (current.path) {
+            const s = `/${current.site}/`;
+            const p = window.location.pathname.split(s);
+            const old = p.splice(1, 1, `/${current.site}`, current.path);
+            const update = p.join('');
 
-        dispatch(pcSetActive(true));
-        return () => {
-            // Unload page composer
-            dispatch(pcSetActive(false));
-        };
+            if (old[0] !== current.path) {
+                mainResourcePath.current = initialValue(null, current);
+                updateStoreAndHistory({pathName: update, queryString: window.location.search});
+            }
+        }
     }, [current.path]);
 
     useEffect(() => {
@@ -129,7 +131,12 @@ export default function () {
             window.addEventListener('message', iFrameOnHistoryMessage, false);
         }
 
+        // Store initial location on mount
+        updateStoreAndHistory({pathName: window.location.pathname, queryString: window.location.search});
+        dispatch(pcSetActive(true));
+
         return () => {
+            dispatch(pcSetActive(false));
             window.removeEventListener('message', iFrameOnHistoryMessage, false);
         };
     }, []);
