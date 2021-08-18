@@ -88,7 +88,7 @@ const iFrameOnHistoryMessage = event => {
             return;
         }
 
-        if (event.source.app === 'page-composer' && event.data !== null && event.data.msg !== null) {
+        if (event.data !== null && event.data.msg !== null) {
             if (event.data.msg === 'edit frame history updated') {
                 updateStoreAndHistory(getPathFromChildIFrame());
             } else if (event.data.msg === 'setTitle') {
