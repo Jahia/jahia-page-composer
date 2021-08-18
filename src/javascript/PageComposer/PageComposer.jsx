@@ -108,23 +108,18 @@ export default function () {
         language: state.language,
         site: state.site,
         path: state.pagecomposer.lastVisitedSite === state.site ? state.pagecomposer.path : undefined,
-        lastVisitedSite: state.pagecomposer.lastVisitedSite
+        lastVisitedSite: state.pagecomposer.lastVisitedSite,
+        navigateTo: state.pagecomposer.navigateTo
     }));
 
     useEffect(() => {
         // Path changes via redux action, construct new path
-        if (current.path) {
-            const s = `/${current.site}/`;
-            const p = window.location.pathname.split(s);
-            const old = p.splice(1, 1, `/${current.site}`, current.path);
-            const update = p.join('');
-
-            if (old[0] !== current.path) {
-                mainResourcePath.current = initialValue(null, current);
-                updateStoreAndHistory({pathName: update, queryString: window.location.search});
-            }
+        if (current.navigateTo) {
+            const p = initialValue(composerLocation, current).replace(current.path, current.navigateTo);
+            mainResourcePath.current = p;
+            updateStoreAndHistory({pathName: p.replace('/cms/edit', '').replace('?redirect=false', ''), queryString: window.location.search});
         }
-    }, [current.path]);
+    }, [current.navigateTo]);
 
     useEffect(() => {
         if (window.frames['page-composer-frame'] !== undefined) {
