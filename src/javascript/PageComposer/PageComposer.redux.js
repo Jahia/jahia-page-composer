@@ -56,4 +56,5 @@ export const pageComposerRedux = () => {
         targets: ['language:2'],
         reducer: languageReducer
     });
+    registry.add('redux-action', 'pagecomposerNavigateTo', {action: data => dispatch => dispatch(pcSetNavigateTo(data))});
 };
