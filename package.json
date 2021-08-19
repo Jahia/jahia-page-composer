@@ -18,8 +18,8 @@
     "build:production-analyze": "yarn build --mode-production --analyze",
     "clean": "rimraf *.log src/main/resources/javascript/apps",
     "clean:all": "yarn clean && rimraf node_modules node",
-    "lint": "./node_modules/.bin/eslint --ext js,jsx .",
-    "lint:fix": "./node_modules/.bin/eslint --ext js,jsx --fix ."
+    "lint": "./node_modules/.bin/eslint --ext js,jsx src/javascript",
+    "lint:fix": "./node_modules/.bin/eslint --ext js,jsx --fix src/javascript"
   },
   "main": "index.js",
   "license": "MIT",
