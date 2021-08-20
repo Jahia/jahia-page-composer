@@ -2,7 +2,7 @@ import {createActions, handleActions} from 'redux-actions';
 import {registry} from '@jahia/ui-extender';
 import {combineReducers} from 'redux';
 
-export const {pcSetCurrentPage, pcSetActive, pcSetPath, pcSetLastVisitedSite} = createActions('PC_SET_CURRENT_PAGE', 'PC_SET_ACTIVE', 'PC_SET_PATH', 'PC_SET_LAST_VISITED_SITE');
+export const {pcSetCurrentPage, pcSetActive, pcSetPath, pcSetLastVisitedSite, pcSetNavigateTo} = createActions('PC_SET_CURRENT_PAGE', 'PC_SET_ACTIVE', 'PC_SET_PATH', 'PC_SET_LAST_VISITED_SITE', 'PC_SET_NAVIGATE_TO');
 
 const ROUTER_REDUX_ACTION = '@@router/LOCATION_CHANGE';
 
@@ -41,9 +41,12 @@ export const pageComposerRedux = () => {
     const lastVisitedSiteReducer = handleActions({
         [pcSetLastVisitedSite]: (state, action) => action.payload
     }, currentValueFromUrl.site);
+    const navigateToReducer = handleActions({
+        [pcSetNavigateTo]: (state, action) => action.payload
+    }, null);
     registry.add('redux-reducer', 'pagecomposer', {
         targets: ['root'],
-        reducer: combineReducers({active: isActiveReducer, currentPage: currentPageReducer, path: pathReducer, lastVisitedSite: lastVisitedSiteReducer})
+        reducer: combineReducers({active: isActiveReducer, currentPage: currentPageReducer, path: pathReducer, lastVisitedSite: lastVisitedSiteReducer, navigateTo: navigateToReducer})
     });
     registry.add('redux-reducer', 'pagecomposerSite', {
         targets: ['site:2'],
@@ -53,4 +56,5 @@ export const pageComposerRedux = () => {
         targets: ['language:2'],
         reducer: languageReducer
     });
+    registry.add('redux-action', 'pagecomposerNavigateTo', {action: data => dispatch => dispatch(pcSetNavigateTo(data))});
 };

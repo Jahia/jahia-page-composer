@@ -12,8 +12,8 @@ const placeholder = 'fake-home-placeholder';
 function initialValue(location, {site, language, path, lastVisitedSite}) {
     let subPath = (path === undefined || site !== lastVisitedSite) ? placeholder : path;
     let mainResourcePath = `/cms/edit/default/${language}/sites/${site}${subPath}`;
-    if (!location.pathname.endsWith('page-composer') && location.pathname.indexOf('/sites/') >= 0) {
-        mainResourcePath = `/cms/edit/${location.pathname.substr(location.pathname.lastIndexOf('/default/'))}`;
+    if (location && !location.pathname.endsWith('page-composer') && location.pathname.indexOf('/sites/') !== -1) {
+        mainResourcePath = `/cms/edit${location.pathname.substr(location.pathname.lastIndexOf('/default/'))}`;
     }
 
     return mainResourcePath + '?redirect=false';
@@ -108,28 +108,30 @@ export default function () {
         language: state.language,
         site: state.site,
         path: state.pagecomposer.lastVisitedSite === state.site ? state.pagecomposer.path : undefined,
-        lastVisitedSite: state.pagecomposer.lastVisitedSite
+        lastVisitedSite: state.pagecomposer.lastVisitedSite,
+        navigateTo: state.pagecomposer.navigateTo
     }));
 
     useEffect(() => {
-        // Store initial location
-        if (!current.path) {
-            updateStoreAndHistory({pathName: window.location.pathname, queryString: window.location.search});
+        // Path changes via redux action, construct new path
+        if (current.navigateTo) {
+            const p = initialValue(composerLocation, current).replace(current.path, current.navigateTo);
+            mainResourcePath.current = p;
+            updateStoreAndHistory({pathName: p.replace('/cms/edit', '').replace('?redirect=false', ''), queryString: window.location.search});
         }
-
-        dispatch(pcSetActive(true));
-        return () => {
-            // Unload page composer
-            dispatch(pcSetActive(false));
-        };
-    }, [current.path]);
+    }, [current.navigateTo]);
 
     useEffect(() => {
         if (window.frames['page-composer-frame'] !== undefined) {
             window.addEventListener('message', iFrameOnHistoryMessage, false);
         }
 
+        // Store initial location on mount
+        updateStoreAndHistory({pathName: window.location.pathname, queryString: window.location.search});
+        dispatch(pcSetActive(true));
+
         return () => {
+            dispatch(pcSetActive(false));
             window.removeEventListener('message', iFrameOnHistoryMessage, false);
         };
     }, []);
