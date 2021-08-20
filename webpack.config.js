@@ -42,18 +42,23 @@ module.exports = (env, argv) => {
                     }
                 },
                 {
-                    test: /\.s[ac]ss$/i,
+                    test: /\.scss$/i,
+                    sideEffects: true,
                     use: [
                         'style-loader',
+                        // Translates CSS into CommonJS
                         {
-                            loader:'css-loader',
+                            loader: 'css-loader',
                             options: {
-                                modules: true
+                                modules: {
+                                    mode: 'local'
+                                }
                             }
                         },
+                        // Compiles Sass to CSS
                         'sass-loader'
                     ]
-                }
+                },
             ]
         },
         plugins: [
