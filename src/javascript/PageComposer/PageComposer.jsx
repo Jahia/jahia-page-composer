@@ -7,24 +7,25 @@ import {useQuery} from '@apollo/react-hooks';
 import {pcSetActive, pcSetCurrentPage, pcSetLastVisitedSite, pcSetPath} from './PageComposer.redux';
 import {GetHomePage} from './PageComposer.gql';
 
+let history = null;
+let dispatch = null;
 const placeholder = 'fake-home-placeholder';
 
 function initialValue(location, {site, language, path, lastVisitedSite}) {
     let subPath = (path === undefined || site !== lastVisitedSite) ? placeholder : path;
-    let mainResourcePath = `/cms/edit/default/${language}/sites/${site}${subPath}`;
-    if (location && !location.pathname.endsWith('page-composer') && location.pathname.indexOf('/sites/') !== -1) {
-        mainResourcePath = `/cms/edit${location.pathname.substr(location.pathname.lastIndexOf('/default/'))}`;
-    }
+    let framePathName = location?.pathname;
+    let iFrameSubPath = (framePathName && !framePathName.endsWith('page-composer') && framePathName.indexOf('/sites/') !== -1) ?
+        `${framePathName.substr(framePathName.lastIndexOf('/default/'))}` :
+        `/default/${language}/sites/${site}${subPath}`;
 
-    return mainResourcePath + '?redirect=false';
+    return getIFramePath(iFrameSubPath);
 }
 
-let history = null;
-let dispatch = null;
-const languageRegexp = /\/default\/(.[^/]*)\/sites\//;
-const siteKeyRegexp = /\/sites\/(.[^/]*)\//;
+function getIFramePath(iFrameSubPath) {
+    return `/cms/edit${iFrameSubPath}?redirect=false`;
+}
 
-let getPathFromChildIFrame = function () {
+function getPathFromChildIFrame() {
     if (window.frames['page-composer-frame'] !== undefined) {
         const location = window.frames['page-composer-frame'].contentWindow.location;
         let framepathname = location.pathname;
@@ -38,9 +39,14 @@ let getPathFromChildIFrame = function () {
 
         return {pathName: framepathname, queryString: location.search};
     }
-};
 
-let updateStoreAndHistory = function (pathFromChildIFrame) {
+    return {};
+}
+
+function updateStoreAndHistory(pathFromChildIFrame) {
+    const languageRegexp = /\/default\/(.[^/]*)\/sites\//;
+    const siteKeyRegexp = /\/sites\/(.[^/]*)\//;
+
     if (pathFromChildIFrame) {
         const {pathName, queryString} = pathFromChildIFrame;
         let newPath = history.location.pathname.replace(/page-composer.*/gi, 'page-composer' + pathName);
@@ -80,23 +86,20 @@ let updateStoreAndHistory = function (pathFromChildIFrame) {
             }));
         });
     }
-};
+}
 
-const iFrameOnHistoryMessage = event => {
-    if (history) {
-        if (event.origin !== window.location.origin) {
-            return;
-        }
-
-        if (event.data !== null && event.data.msg !== null) {
-            if (event.data.msg === 'edit frame history updated') {
-                updateStoreAndHistory(getPathFromChildIFrame());
-            } else if (event.data.msg === 'setTitle') {
-                document.title = event.data.title;
-            }
-        }
+function iFrameOnHistoryMessage(event) {
+    if (!history || event.origin !== window.location.origin) {
+        return;
     }
-};
+
+    let eventMsg = event?.data?.msg;
+    if (eventMsg === 'edit frame history updated') {
+        updateStoreAndHistory(getPathFromChildIFrame());
+    } else if (eventMsg === 'setTitle') {
+        document.title = event.data.title;
+    }
+}
 
 export default function () {
     const composerLocation = useLocation();
@@ -108,18 +111,19 @@ export default function () {
         language: state.language,
         site: state.site,
         path: state.pagecomposer.lastVisitedSite === state.site ? state.pagecomposer.path : undefined,
-        lastVisitedSite: state.pagecomposer.lastVisitedSite,
-        navigateTo: state.pagecomposer.navigateTo
+        lastVisitedSite: state.pagecomposer.lastVisitedSite
     }));
 
+    /* Handle any system name changes from content-editor */
+    const {oldPath, newPath} = useSelector(state => state.pagecomposer.navigateTo || {});
     useEffect(() => {
-        // Path changes via redux action, construct new path
-        if (current.navigateTo) {
-            const p = initialValue(composerLocation, current).replace(current.path, current.navigateTo);
-            mainResourcePath.current = p;
-            updateStoreAndHistory({pathName: p.replace('/cms/edit', '').replace('?redirect=false', ''), queryString: window.location.search});
+        let {pathName, queryString} = getPathFromChildIFrame();
+        if (oldPath && newPath && pathName?.indexOf(oldPath) >= 0) {
+            pathName = pathName.replace(oldPath, newPath);
+            iFramePath.current = getIFramePath(pathName);
+            updateStoreAndHistory({pathName, queryString});
         }
-    }, [current.navigateTo]);
+    }, [oldPath, newPath]);
 
     useEffect(() => {
         if (window.frames['page-composer-frame'] !== undefined) {
@@ -136,18 +140,9 @@ export default function () {
         };
     }, []);
 
-    const iFrameOnLoad = () => {
-        if (window.frames['page-composer-frame'] !== undefined) {
-            window.addEventListener('message', iFrameOnHistoryMessage, false);
-            updateStoreAndHistory(getPathFromChildIFrame());
-        }
-    };
-
     if (current.site === 'systemsite') {
         return <h2 style={{color: 'grey'}}>You need to create a site to see this page</h2>;
     }
-
-    const mainResourcePath = useRef(initialValue(composerLocation, current));
 
     const {error, data, loading} = useQuery(GetHomePage, {
         skip: current.path || current.site === current.lastVisitedSite,
@@ -160,15 +155,23 @@ export default function () {
         return <></>;
     }
 
-    if (mainResourcePath.current.indexOf(placeholder) !== -1 && data && !current.path && !error) {
-        const path = mainResourcePath.current.replace(placeholder,
+    const iFramePath = useRef(initialValue(composerLocation, current));
+    if (iFramePath.current.indexOf(placeholder) !== -1 && data && !current.path && !error) {
+        const path = iFramePath.current.replace(placeholder,
             `/${data.jcr.nodesByQuery.nodes[0].name}.html`);
-        mainResourcePath.current = path;
+        iFramePath.current = path;
         pcSetPath(path);
     }
 
+    const iFrameOnLoad = () => {
+        if (window.frames['page-composer-frame'] !== undefined) {
+            window.addEventListener('message', iFrameOnHistoryMessage, false);
+            updateStoreAndHistory(getPathFromChildIFrame());
+        }
+    };
+
     return (
-        <IframeRenderer url={window.contextJsParameters.contextPath + mainResourcePath.current}
+        <IframeRenderer url={window.contextJsParameters.contextPath + iFramePath.current}
                         id="page-composer-frame"
                         onLoad={iFrameOnLoad}
         />
