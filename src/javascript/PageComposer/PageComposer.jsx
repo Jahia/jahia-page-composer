@@ -13,12 +13,16 @@ const placeholder = 'fake-home-placeholder';
 
 function initialValue(location, {site, language, path, lastVisitedSite}) {
     let subPath = (path === undefined || site !== lastVisitedSite) ? placeholder : path;
-    let mainResourcePath = `/cms/edit/default/${language}/sites/${site}${subPath}`;
-    if (location && !location.pathname.endsWith('page-composer') && location.pathname.indexOf('/sites/') !== -1) {
-        mainResourcePath = `/cms/edit${location.pathname.substr(location.pathname.lastIndexOf('/default/'))}`;
-    }
+    let framePathName = location?.pathname;
+    let iFrameSubPath = (framePathName && !framePathName.endsWith('page-composer') && framePathName.indexOf('/sites/') !== -1) ?
+        `${framePathName.substr(framePathName.lastIndexOf('/default/'))}` :
+        `/default/${language}/sites/${site}${subPath}`;
 
-    return mainResourcePath + '?redirect=false';
+    return getIFramePath(iFrameSubPath);
+}
+
+function getIFramePath(iFrameSubPath) {
+    return `/cms/edit${iFrameSubPath}?redirect=false`;
 }
 
 function getPathFromChildIFrame() {
@@ -116,7 +120,7 @@ export default function () {
         let {pathName, queryString} = getPathFromChildIFrame();
         if (oldPath && newPath && pathName?.indexOf(oldPath) >= 0) {
             pathName = pathName.replace(oldPath, newPath);
-            mainResourcePath.current = `/cms/edit${pathName}?redirect=false`;
+            iFramePath.current = getIFramePath(pathName);
             updateStoreAndHistory({pathName, queryString});
         }
     }, [oldPath, newPath]);
@@ -151,11 +155,11 @@ export default function () {
         return <></>;
     }
 
-    const mainResourcePath = useRef(initialValue(composerLocation, current));
-    if (mainResourcePath.current.indexOf(placeholder) !== -1 && data && !current.path && !error) {
-        const path = mainResourcePath.current.replace(placeholder,
+    const iFramePath = useRef(initialValue(composerLocation, current));
+    if (iFramePath.current.indexOf(placeholder) !== -1 && data && !current.path && !error) {
+        const path = iFramePath.current.replace(placeholder,
             `/${data.jcr.nodesByQuery.nodes[0].name}.html`);
-        mainResourcePath.current = path;
+        iFramePath.current = path;
         pcSetPath(path);
     }
 
@@ -167,7 +171,7 @@ export default function () {
     };
 
     return (
-        <IframeRenderer url={window.contextJsParameters.contextPath + mainResourcePath.current}
+        <IframeRenderer url={window.contextJsParameters.contextPath + iFramePath.current}
                         id="page-composer-frame"
                         onLoad={iFrameOnLoad}
         />
