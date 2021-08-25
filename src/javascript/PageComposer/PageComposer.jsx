@@ -113,6 +113,7 @@ export default function () {
         path: state.pagecomposer.lastVisitedSite === state.site ? state.pagecomposer.path : undefined,
         lastVisitedSite: state.pagecomposer.lastVisitedSite
     }));
+    const iFramePath = useRef(initialValue(composerLocation, current));
 
     /* Handle any system name changes from content-editor */
     const {oldPath, newPath} = useSelector(state => state.pagecomposer.navigateTo || {});
@@ -155,7 +156,6 @@ export default function () {
         return <></>;
     }
 
-    const iFramePath = useRef(initialValue(composerLocation, current));
     if (iFramePath.current.indexOf(placeholder) !== -1 && data && !current.path && !error) {
         const path = iFramePath.current.replace(placeholder,
             `/${data.jcr.nodesByQuery.nodes[0].name}.html`);
