@@ -38,6 +38,7 @@ let getPathFromChildIFrame = function () {
 
         return {pathName: framepathname, queryString: location.search};
     }
+    return {};
 };
 
 let updateStoreAndHistory = function (pathFromChildIFrame) {
@@ -108,18 +109,19 @@ export default function () {
         language: state.language,
         site: state.site,
         path: state.pagecomposer.lastVisitedSite === state.site ? state.pagecomposer.path : undefined,
-        lastVisitedSite: state.pagecomposer.lastVisitedSite,
-        navigateTo: state.pagecomposer.navigateTo
+        lastVisitedSite: state.pagecomposer.lastVisitedSite
     }));
 
+    /* Handle any system name changes from content-editor */
+    const {oldPath, newPath} = useSelector(state => state.pagecomposer.navigateTo || {});
     useEffect(() => {
-        // Path changes via redux action, construct new path
-        if (current.navigateTo) {
-            const p = initialValue(composerLocation, current).replace(current.path, current.navigateTo);
-            mainResourcePath.current = p;
-            updateStoreAndHistory({pathName: p.replace('/cms/edit', '').replace('?redirect=false', ''), queryString: window.location.search});
+        let {pathName, queryString} = getPathFromChildIFrame();
+        if (oldPath && newPath && pathName?.indexOf(oldPath) >= 0) {
+            pathName = pathName.replace(oldPath, newPath);
+            mainResourcePath.current = `/cms/edit${pathName}?redirect=false`;
+            updateStoreAndHistory({pathName, queryString});
         }
-    }, [current.navigateTo]);
+    }, [oldPath, newPath]);
 
     useEffect(() => {
         if (window.frames['page-composer-frame'] !== undefined) {
