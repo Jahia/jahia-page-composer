@@ -4,9 +4,11 @@ import {registry} from '@jahia/ui-extender';
 import {batch, useDispatch, useSelector} from 'react-redux';
 import {useHistory, useLocation} from 'react-router-dom';
 import {useQuery} from '@apollo/react-hooks';
-import {pcSetActive, pcSetCurrentPage, pcSetLastVisitedSite, pcSetPath} from './PageComposer.redux';
+import {pcSetActive, pcSetCurrentPage, pcSetLastVisitedSite, pcSetPath, pcSetNavigateTo} from './PageComposer.redux';
 import {GetHomePage} from './PageComposer.gql';
 import {ErrorPage} from './ErrorPage';
+import styles from './PageComposer.scss';
+import {Loader} from '@jahia/moonstone';
 
 let history = null;
 let dispatch = null;
@@ -102,10 +104,17 @@ function iFrameOnHistoryMessage(event) {
     }
 }
 
+const loadingStatuses = {
+    LOADING: 0,
+    LOADED: 1,
+    ERROR: 2
+};
+
 export default function () {
     const composerLocation = useLocation();
     history = useHistory();
     dispatch = useDispatch();
+    const [status, setStatus] = useState(loadingStatuses.LOADING);
 
     // Do not recover from lastVisitedPath in case site have been switched in an other app.
     const current = useSelector(state => ({
@@ -142,21 +151,19 @@ export default function () {
         };
     }, []);
 
-    const [errorPage, setErrorPageorPage] = useState(false);
-
     if (current.site === 'systemsite') {
         return <h2 style={{color: 'grey'}}>You need to create a site to see this page</h2>;
     }
 
     const {error, data, loading} = useQuery(GetHomePage, {
-        skip: !errorPage && (current.path || current.site === current.lastVisitedSite),
+        skip: (status !== loadingStatuses.ERROR) && (current.path || current.site === current.lastVisitedSite),
         variables: {
             query: `SELECT * FROM [jnt:page] where ischildnode('/sites/${current.site}') and [j:isHomePage]=true`
         }
     });
 
     if (loading) {
-        return <></>;
+        return <Loader/>;
     }
 
     if (iFramePath.current.indexOf(placeholder) !== -1 && data && !current.path && !error) {
@@ -166,30 +173,46 @@ export default function () {
         pcSetPath(path);
     }
 
-    const iFrameOnLoad = () => {
-        if (window.frames['page-composer-frame'] !== undefined) {
+    function checkFrameStatus(f) {
+        let element = f.contentWindow.document.querySelector('head meta[name=\'description\']');
+        return (element && element.attributes.content.value.startsWith('40'))
+    }
+
+    const iFrameOnLoad = (e) => {
+        const hasError = checkFrameStatus(e.target);
+        if (window.frames['page-composer-frame'] !== undefined && !hasError) {
+            window.addEventListener('iframeloaded', () => {
+                const f = window.frames['page-composer-frame'].contentWindow.document.querySelector('.gwt-Frame')
+                if (checkFrameStatus(f)) {
+                    setStatus(loadingStatuses.ERROR);
+                }
+            });
+
             window.addEventListener('message', iFrameOnHistoryMessage, false);
             updateStoreAndHistory(getPathFromChildIFrame());
 
-            let element = e.target.contentWindow.document.querySelector('head meta[name=\'description\']');
-            if (element && element.attributes.content.value.startsWith('40')) {
-                setErrorPageorPage(true);
-            }
+            setStatus(loadingStatuses.LOADED);
+        } else if (hasError) {
+            updateStoreAndHistory(getPathFromChildIFrame());
+            setStatus(loadingStatuses.ERROR);
         }
     };
 
-    if (errorPage) {
+    if (status === loadingStatuses.ERROR) {
         return (
             <ErrorPage onClick={data && (() => {
+                // dispatch(pcSetNavigateTo(`/${data.jcr.nodesByQuery.nodes[0].name}.html`));
                 dispatch(pcSetPath(null));
-                mainResourcePath.current = `/cms/edit/default/${current.language}/sites/${current.site}/${data.jcr.nodesByQuery.nodes[0].name}.html?redirect=false&force-error-page=true`;
+                iFramePath.current = `/cms/edit/default/${current.language}/sites/${current.site}/${data.jcr.nodesByQuery.nodes[0].name}.html?redirect=false&force-error-page=true`;
+                setStatus(loadingStatuses.LOADING);
             })}
             />
         );
     }
 
     return (
-        <IframeRenderer url={window.contextJsParameters.contextPath + iFramePath.current}
+        <IframeRenderer className={status === loadingStatuses.LOADED ? styles.PageComposerIframeShown : styles.PageComposerIframeHidden}
+                        url={window.contextJsParameters.contextPath + iFramePath.current}
                         id="page-composer-frame"
                         onLoad={iFrameOnLoad}
         />
