@@ -1,4 +1,4 @@
-import React, {useEffect, useRef} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import {IframeRenderer} from '@jahia/jahia-ui-root';
 import {registry} from '@jahia/ui-extender';
 import {batch, useDispatch, useSelector} from 'react-redux';
@@ -6,6 +6,7 @@ import {useHistory, useLocation} from 'react-router-dom';
 import {useQuery} from '@apollo/react-hooks';
 import {pcSetActive, pcSetCurrentPage, pcSetLastVisitedSite, pcSetPath} from './PageComposer.redux';
 import {GetHomePage} from './PageComposer.gql';
+import {ErrorPage} from './ErrorPage';
 
 let history = null;
 let dispatch = null;
@@ -141,12 +142,14 @@ export default function () {
         };
     }, []);
 
+    const [errorPage, setErrorPageorPage] = useState(false);
+
     if (current.site === 'systemsite') {
         return <h2 style={{color: 'grey'}}>You need to create a site to see this page</h2>;
     }
 
     const {error, data, loading} = useQuery(GetHomePage, {
-        skip: current.path || current.site === current.lastVisitedSite,
+        skip: !errorPage && (current.path || current.site === current.lastVisitedSite),
         variables: {
             query: `SELECT * FROM [jnt:page] where ischildnode('/sites/${current.site}') and [j:isHomePage]=true`
         }
@@ -167,8 +170,23 @@ export default function () {
         if (window.frames['page-composer-frame'] !== undefined) {
             window.addEventListener('message', iFrameOnHistoryMessage, false);
             updateStoreAndHistory(getPathFromChildIFrame());
+
+            let element = e.target.contentWindow.document.querySelector('head meta[name=\'description\']');
+            if (element && element.attributes.content.value.startsWith('40')) {
+                setErrorPageorPage(true);
+            }
         }
     };
+
+    if (errorPage) {
+        return (
+            <ErrorPage onClick={data && (() => {
+                dispatch(pcSetPath(null));
+                mainResourcePath.current = `/cms/edit/default/${current.language}/sites/${current.site}/${data.jcr.nodesByQuery.nodes[0].name}.html?redirect=false&force-error-page=true`;
+            })}
+            />
+        );
+    }
 
     return (
         <IframeRenderer url={window.contextJsParameters.contextPath + iFramePath.current}

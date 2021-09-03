@@ -1,3 +1,7 @@
 {
-  "label" : "Page Composer"
+  "label" : "Page Composer",
+  "errorTitle": "Page non trouvée",
+  "errorContent1": "Oups, nous ne trouvons pas ce que vous cherchez. ",
+  "errorContent2": "La ressource n'existe pas, ou elle a récemment été supprimée, déplacée ou modifiée.",
+  "backToHome": "Retour à la page d'accueil"
 }
