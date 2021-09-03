@@ -4,7 +4,7 @@ import {registry} from '@jahia/ui-extender';
 import {batch, useDispatch, useSelector} from 'react-redux';
 import {useHistory, useLocation} from 'react-router-dom';
 import {useQuery} from '@apollo/react-hooks';
-import {pcSetActive, pcSetCurrentPage, pcSetLastVisitedSite, pcSetPath, pcSetNavigateTo} from './PageComposer.redux';
+import {pcSetActive, pcSetCurrentPage, pcSetLastVisitedSite, pcSetPath} from './PageComposer.redux';
 import {GetHomePage} from './PageComposer.gql';
 import {ErrorPage} from './ErrorPage';
 import styles from './PageComposer.scss';
@@ -175,14 +175,14 @@ export default function () {
 
     function checkFrameStatus(f) {
         let element = f.contentWindow.document.querySelector('head meta[name=\'description\']');
-        return (element && element.attributes.content.value.startsWith('40'))
+        return (element && element.attributes.content.value.startsWith('40'));
     }
 
-    const iFrameOnLoad = (e) => {
+    const iFrameOnLoad = e => {
         const hasError = checkFrameStatus(e.target);
         if (window.frames['page-composer-frame'] !== undefined && !hasError) {
             window.addEventListener('iframeloaded', () => {
-                const f = window.frames['page-composer-frame'].contentWindow.document.querySelector('.gwt-Frame')
+                const f = window.frames['page-composer-frame'].contentWindow.document.querySelector('.gwt-Frame');
                 if (checkFrameStatus(f)) {
                     setStatus(loadingStatuses.ERROR);
                 }
@@ -201,7 +201,7 @@ export default function () {
     if (status === loadingStatuses.ERROR) {
         return (
             <ErrorPage onClick={data && (() => {
-                // dispatch(pcSetNavigateTo(`/${data.jcr.nodesByQuery.nodes[0].name}.html`));
+                // Dispatch(pcSetNavigateTo(`/${data.jcr.nodesByQuery.nodes[0].name}.html`));
                 dispatch(pcSetPath(null));
                 iFramePath.current = `/cms/edit/default/${current.language}/sites/${current.site}/${data.jcr.nodesByQuery.nodes[0].name}.html?redirect=false&force-error-page=true`;
                 setStatus(loadingStatuses.LOADING);
