@@ -7,7 +7,6 @@ import {useQuery} from '@apollo/react-hooks';
 import {pcSetActive, pcSetCurrentPage, pcSetLastVisitedSite, pcSetPath} from './PageComposer.redux';
 import {GetHomePage} from './PageComposer.gql';
 import {ErrorPage} from './ErrorPage';
-import styles from './PageComposer.scss';
 import {Loader} from '@jahia/moonstone';
 
 let history = null;
@@ -104,17 +103,11 @@ function iFrameOnHistoryMessage(event) {
     }
 }
 
-const loadingStatuses = {
-    LOADING: 0,
-    LOADED: 1,
-    ERROR: 2
-};
-
 export default function () {
     const composerLocation = useLocation();
     history = useHistory();
     dispatch = useDispatch();
-    const [status, setStatus] = useState(loadingStatuses.LOADING);
+    const [errorPage, setErrorPage] = useState(false);
 
     // Do not recover from lastVisitedPath in case site have been switched in an other app.
     const current = useSelector(state => ({
@@ -156,7 +149,7 @@ export default function () {
     }
 
     const {error, data, loading} = useQuery(GetHomePage, {
-        skip: (status !== loadingStatuses.ERROR) && (current.path || current.site === current.lastVisitedSite),
+        skip: !errorPage && (current.path || current.site === current.lastVisitedSite),
         variables: {
             query: `SELECT * FROM [jnt:page] where ischildnode('/sites/${current.site}') and [j:isHomePage]=true`
         }
@@ -184,35 +177,33 @@ export default function () {
             window.addEventListener('iframeloaded', () => {
                 const f = window.frames['page-composer-frame'].contentWindow.document.querySelector('.gwt-Frame');
                 if (checkFrameStatus(f)) {
-                    setStatus(loadingStatuses.ERROR);
+                    setErrorPage(true);
                 }
             });
 
             window.addEventListener('message', iFrameOnHistoryMessage, false);
             updateStoreAndHistory(getPathFromChildIFrame());
 
-            setStatus(loadingStatuses.LOADED);
+            setErrorPage(false);
         } else if (hasError) {
             updateStoreAndHistory(getPathFromChildIFrame());
-            setStatus(loadingStatuses.ERROR);
+            setErrorPage(true);
         }
     };
 
-    if (status === loadingStatuses.ERROR) {
+    if (errorPage) {
         return (
             <ErrorPage onClick={data && (() => {
-                // Dispatch(pcSetNavigateTo(`/${data.jcr.nodesByQuery.nodes[0].name}.html`));
                 dispatch(pcSetPath(null));
                 iFramePath.current = `/cms/edit/default/${current.language}/sites/${current.site}/${data.jcr.nodesByQuery.nodes[0].name}.html?redirect=false&force-error-page=true`;
-                setStatus(loadingStatuses.LOADING);
+                setErrorPage(false);
             })}
             />
         );
     }
 
     return (
-        <IframeRenderer className={status === loadingStatuses.LOADED ? styles.PageComposerIframeShown : styles.PageComposerIframeHidden}
-                        url={window.contextJsParameters.contextPath + iFramePath.current}
+        <IframeRenderer url={window.contextJsParameters.contextPath + iFramePath.current}
                         id="page-composer-frame"
                         onLoad={iFrameOnLoad}
         />
