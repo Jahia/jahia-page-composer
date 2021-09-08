@@ -1,4 +1,4 @@
-import React, {useEffect, useRef} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import {IframeRenderer} from '@jahia/jahia-ui-root';
 import {registry} from '@jahia/ui-extender';
 import {batch, useDispatch, useSelector} from 'react-redux';
@@ -6,6 +6,8 @@ import {useHistory, useLocation} from 'react-router-dom';
 import {useQuery} from '@apollo/react-hooks';
 import {pcSetActive, pcSetCurrentPage, pcSetLastVisitedSite, pcSetPath} from './PageComposer.redux';
 import {GetHomePage} from './PageComposer.gql';
+import {ErrorPage} from './ErrorPage';
+import {Loader} from '@jahia/moonstone';
 
 let history = null;
 let dispatch = null;
@@ -105,6 +107,7 @@ export default function () {
     const composerLocation = useLocation();
     history = useHistory();
     dispatch = useDispatch();
+    const [errorPage, setErrorPage] = useState(false);
 
     // Do not recover from lastVisitedPath in case site have been switched in an other app.
     const current = useSelector(state => ({
@@ -146,14 +149,14 @@ export default function () {
     }
 
     const {error, data, loading} = useQuery(GetHomePage, {
-        skip: current.path || current.site === current.lastVisitedSite,
+        skip: !errorPage && (current.path || current.site === current.lastVisitedSite),
         variables: {
             query: `SELECT * FROM [jnt:page] where ischildnode('/sites/${current.site}') and [j:isHomePage]=true`
         }
     });
 
     if (loading) {
-        return <></>;
+        return <Loader/>;
     }
 
     if (iFramePath.current.indexOf(placeholder) !== -1 && data && !current.path && !error) {
@@ -163,12 +166,41 @@ export default function () {
         pcSetPath(path);
     }
 
-    const iFrameOnLoad = () => {
-        if (window.frames['page-composer-frame'] !== undefined) {
+    function checkFrameStatus(f) {
+        let element = f.contentWindow.document.querySelector('head meta[name=\'description\']');
+        return (element && element.attributes.content.value.startsWith('40'));
+    }
+
+    const iFrameOnLoad = e => {
+        const hasError = checkFrameStatus(e.target);
+        if (window.frames['page-composer-frame'] !== undefined && !hasError) {
+            window.addEventListener('iframeloaded', () => {
+                const f = window.frames['page-composer-frame'].contentWindow.document.querySelector('.gwt-Frame');
+                if (checkFrameStatus(f)) {
+                    setErrorPage(true);
+                }
+            });
+
             window.addEventListener('message', iFrameOnHistoryMessage, false);
             updateStoreAndHistory(getPathFromChildIFrame());
+
+            setErrorPage(false);
+        } else if (hasError) {
+            updateStoreAndHistory(getPathFromChildIFrame());
+            setErrorPage(true);
         }
     };
+
+    if (errorPage) {
+        return (
+            <ErrorPage onClick={data && (() => {
+                dispatch(pcSetPath(null));
+                iFramePath.current = `/cms/edit/default/${current.language}/sites/${current.site}/${data.jcr.nodesByQuery.nodes[0].name}.html?redirect=false&force-error-page=true`;
+                setErrorPage(false);
+            })}
+            />
+        );
+    }
 
     return (
         <IframeRenderer url={window.contextJsParameters.contextPath + iFramePath.current}
