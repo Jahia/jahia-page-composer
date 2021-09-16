@@ -36,6 +36,7 @@
     "@jahia/data-helper": "^1.0.0",
     "@jahia/moonstone": "^1.1.0",
     "@jahia/ui-extender": "^1.0.3",
+    "clsx": "^1.1.1",
     "connected-react-router": "^6.8.0",
     "graphql-tag": "^2.11.0",
     "prop-types": "^15.7.2",
