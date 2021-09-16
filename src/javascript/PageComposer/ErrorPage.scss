@@ -1,0 +1,42 @@
+.page404 {
+    display: flex;
+    flex: 1;
+    min-height: 100vh;
+    justify-content: center;
+    align-items: center;
+    background-color: #f0f0f0;
+}
+
+.page404 {
+    background-image: url("data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTIwOCIgaGVpZ2h0PSI0OTciIHZpZXdCb3g9IjAgMCAxMjA4IDQ5NyIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZD0iTTM4Mi4xODMgMzExLjgwOFY0MDguMTI4SDMxOC44ODdWNDkwSDE5NS43MzVWNDA4LjEyOEgwLjM0MzE0VjMxNC41NkwyMTcuNzUxIDQuOTU5OTZIMzE4Ljg4N1YzMTEuODA4SDM4Mi4xODNaTTExMy4xNzUgMzExLjgwOEgxOTUuNzM1VjE5Mi43ODRMMTEzLjE3NSAzMTEuODA4WiIgZmlsbD0iI0Y1RjVGNSIvPgo8cGF0aCBkPSJNNTk4LjYzNCA0OTYuMTkyQzUzOC41NDkgNDk2LjE5MiA0OTIuNjgyIDQ3NC44NjQgNDYxLjAzNCA0MzIuMjA4QzQyOS4zODYgMzg5LjU1MiA0MTMuNTYyIDMyNy44NjEgNDEzLjU2MiAyNDcuMTM2QzQxMy41NjIgMTY3Ljc4NyA0MjkuMzg2IDEwNi43ODQgNDYxLjAzNCA2NC4xMjhDNDkzLjE0MSAyMS40NzIgNTM5LjAwOCAwLjE0Mzk4MiA1OTguNjM0IDAuMTQzOTgyQzY1OC4yNjEgMC4xNDM5ODIgNzAzLjg5OCAyMS40NzIgNzM1LjU0NiA2NC4xMjhDNzY3LjY1MyAxMDYuNzg0IDc4My43MDYgMTY3Ljc4NyA3ODMuNzA2IDI0Ny4xMzZDNzgzLjcwNiAzMjcuODYxIDc2Ny44ODIgMzg5LjU1MiA3MzYuMjM0IDQzMi4yMDhDNzA0LjU4NiA0NzQuODY0IDY1OC43MiA0OTYuMTkyIDU5OC42MzQgNDk2LjE5MlpNNTk4LjYzNCA0MDAuNTZDNjIwLjY1IDQwMC41NiA2MzYuNDc0IDM4OC42MzUgNjQ2LjEwNiAzNjQuNzg0QzY1NS43MzggMzQwLjkzMyA2NjAuNTU0IDMwMS43MTcgNjYwLjU1NCAyNDcuMTM2QzY2MC41NTQgMTkzLjQ3MiA2NTUuNzM4IDE1NC45NDQgNjQ2LjEwNiAxMzEuNTUyQzYzNi40NzQgMTA3LjcwMSA2MjAuNjUgOTUuNzc2IDU5OC42MzQgOTUuNzc2QzU3Ni42MTggOTUuNzc2IDU2MC43OTQgMTA3LjcwMSA1NTEuMTYyIDEzMS41NTJDNTQxLjUzIDE1NC45NDQgNTM2LjcxNCAxOTMuNDcyIDUzNi43MTQgMjQ3LjEzNkM1MzYuNzE0IDMwMS43MTcgNTQxLjUzIDM0MC45MzMgNTUxLjE2MiAzNjQuNzg0QzU2MC43OTQgMzg4LjYzNSA1NzYuNjE4IDQwMC41NiA1OTguNjM0IDQwMC41NloiIGZpbGw9IiNGNUY1RjUiLz4KPHBhdGggZD0iTTEyMDcuMjUgMzExLjgwOFY0MDguMTI4SDExNDMuOTVWNDkwSDEwMjAuOFY0MDguMTI4SDgyNS40MDZWMzE0LjU2TDEwNDIuODEgNC45NTk5NkgxMTQzLjk1VjMxMS44MDhIMTIwNy4yNVpNOTM4LjIzOCAzMTEuODA4SDEwMjAuOFYxOTIuNzg0TDkzOC4yMzggMzExLjgwOFoiIGZpbGw9IiNGNUY1RjUiLz4KPC9zdmc+Cg==");
+    background-repeat: no-repeat;
+    background-size: 80%;
+    background-position: center;
+}
+
+.pageError-wrapper {
+    flex: 1;
+    width: 900px;
+    text-align: center;
+    padding: 120px 40px 40px 40px;
+}
+
+.page404-description {
+    margin-bottom: var(--spacing-small);
+}
+
+.page404-title {
+    font-weight: 900;
+    font-size: 40px;
+    margin: 0 auto 40px;
+}
+
+.page404-main {
+    height: fit-content;
+    max-width: 75%;
+}
+
+.page404-button {
+    margin-top: var(--spacing-large);
+}
+
