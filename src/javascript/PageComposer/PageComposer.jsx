@@ -149,19 +149,25 @@ export default function () {
     }
 
     const {error, data, loading} = useQuery(GetHomePage, {
+        fetchPolicy: 'network-only',
         skip: !errorPage && (current.path || current.site === current.lastVisitedSite),
         variables: {
-            query: `SELECT * FROM [jnt:page] where ischildnode('/sites/${current.site}') and [j:isHomePage]=true`
+            path: `/sites/${current.site}`
         }
     });
+    if (error) {
+        console.error('error while loading home page for site', current, error);
+    }
 
     if (loading) {
         return <Loader/>;
     }
 
-    if (iFramePath.current.indexOf(placeholder) !== -1 && data && !current.path && !error) {
+    const homePage = data?.jcr?.nodeByPath?.site?.homePage;
+
+    if (iFramePath.current.indexOf(placeholder) !== -1 && homePage && !current.path && !error) {
         const path = iFramePath.current.replace(placeholder,
-            `/${data.jcr.nodesByQuery.nodes[0].name}.html`);
+            `/${homePage.name}.html`);
         iFramePath.current = path;
         pcSetPath(path);
     }
@@ -195,7 +201,7 @@ export default function () {
         return (
             <ErrorPage onClick={data && (() => {
                 dispatch(pcSetPath(null));
-                iFramePath.current = `/cms/edit/default/${current.language}/sites/${current.site}/${data.jcr.nodesByQuery.nodes[0].name}.html?redirect=false&force-error-page=true`;
+                iFramePath.current = `/cms/edit/default/${current.language}${homePage.path}.html?redirect=false&force-error-page=true`;
                 setErrorPage(false);
             })}
             />
