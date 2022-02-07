@@ -20,11 +20,11 @@ function initialValue(location, {site, language, path, lastVisitedSite}) {
         `${framePathName.substr(framePathName.lastIndexOf('/default/'))}` :
         `/default/${language}/sites/${site}${subPath}`;
 
-    return getIFramePath(iFrameSubPath);
+    return getIFramePath(iFrameSubPath, location?.search.replace('?', '&'));
 }
 
-function getIFramePath(iFrameSubPath) {
-    return `/cms/edit${iFrameSubPath}?redirect=false`;
+function getIFramePath(iFrameSubPath, queryString) {
+    return `/cms/edit${iFrameSubPath}?redirect=false${queryString}`;
 }
 
 function getPathFromChildIFrame() {
@@ -71,8 +71,8 @@ function updateStoreAndHistory(pathFromChildIFrame) {
             const nodeName = pageNameArray.join('.');
             const nodePath = `/sites/${siteKey}${parentPath}/${nodeName}`;
 
-            if (history.location.pathname !== newPath) {
-                history.replace(newPath);
+            if (history.location.pathname !== newPath || history.location.search !== queryString) {
+                history.replace(newPath + queryString);
                 dispatch(pcSetPath(relSitePath));
                 dispatch(pcSetLastVisitedSite(siteKey));
             }
@@ -124,7 +124,7 @@ export default function () {
         let {pathName, queryString} = getPathFromChildIFrame();
         if (oldPath && newPath && pathName?.indexOf(oldPath) >= 0) {
             pathName = pathName.replace(oldPath, newPath);
-            iFramePath.current = getIFramePath(pathName);
+            iFramePath.current = getIFramePath(pathName, queryString);
             updateStoreAndHistory({pathName, queryString});
         }
     }, [oldPath, newPath]);
@@ -134,8 +134,9 @@ export default function () {
             window.addEventListener('message', iFrameOnHistoryMessage, false);
         }
 
+        const pathName = window.location.pathname.substr(window.location.pathname.indexOf('jahia/page-composer') + 'jahia/page-composer'.length);
         // Store initial location on mount
-        updateStoreAndHistory({pathName: window.location.pathname, queryString: window.location.search});
+        updateStoreAndHistory({pathName, queryString: window.location.search});
         dispatch(pcSetActive(true));
 
         return () => {
