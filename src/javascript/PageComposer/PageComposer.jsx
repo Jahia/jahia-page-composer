@@ -4,7 +4,7 @@ import {registry} from '@jahia/ui-extender';
 import {batch, useDispatch, useSelector} from 'react-redux';
 import {useHistory, useLocation} from 'react-router-dom';
 import {useQuery} from '@apollo/react-hooks';
-import {pcSetActive, pcSetCurrentPage, pcSetLastVisitedSite, pcSetPath} from './PageComposer.redux';
+import {pcSetActive, pcSetCurrentPage, pcSetLastVisitedSite, pcSetPath, pcSetNavigateTo} from './PageComposer.redux';
 import {GetHomePage} from './PageComposer.gql';
 import {ErrorPage} from './ErrorPage';
 import {Loader} from '@jahia/moonstone';
@@ -75,6 +75,10 @@ function updateStoreAndHistory(pathFromChildIFrame) {
                 history.replace(newPath + queryString);
                 dispatch(pcSetPath(relSitePath));
                 dispatch(pcSetLastVisitedSite(siteKey));
+                dispatch(pcSetNavigateTo({
+                    oldPath: window.jahia.reduxStore.getState().pagecomposer.navigateTo.newPath,
+                    newPath: nodePath
+                }));
             }
 
             dispatch(registry.get('redux-action', 'setSite').action(siteKey));
