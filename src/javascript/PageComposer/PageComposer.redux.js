@@ -48,7 +48,7 @@ export const pageComposerRedux = () => {
         [pcSetLastVisitedSite]: (state, action) => action.payload
     }, currentValueFromUrl.site);
     const navigateToReducer = handleActions({
-        [pcSetNavigateTo]: (state, action) => ({...state, ...action.payload})
+        [pcSetNavigateTo]: (state, action) => action.payload
     }, null);
     registry.add('redux-reducer', 'pagecomposer', {
         targets: ['root'],
