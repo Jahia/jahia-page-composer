@@ -1,4 +1,4 @@
-  # INTEGRATION TESTS NOT WORKING
+
 
 # This workflows can be triggered manually via the GitHub actions UI
 # It is used to trigger an integration tests run using snapshot artifacts
@@ -28,7 +28,7 @@ jobs:
           version: '1.29.2'
       - uses: actions/setup-node@v2
         with:
-          node-version: 'lts/*'
+          node-version: 14
       - uses: jahia/jahia-modules-action/integration-tests@v2
         with:
           module_id: jahia-page-composer
