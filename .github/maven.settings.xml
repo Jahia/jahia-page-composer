@@ -12,6 +12,11 @@
             </properties>
         </profile>
     </profiles>
+
+    <activeProfiles>
+        <activeProfile>sonar</activeProfile>
+    </activeProfiles>
+
     <servers>
         <server>
             <id>jahia-public</id>
@@ -25,11 +30,11 @@
         </server>
         <server>
             <id>staging-repository</id>
-            <username>${env.NEXUS_RELEASE_USERNAME}</username>
-            <password>${env.NEXUS_RELEASE_PASSWORD}</password>
+            <username>${env.NEXUS_USERNAME}</username>
+            <password>${env.NEXUS_PASSWORD}</password>
         </server>
     </servers>
     <pluginGroups>
-	    <pluginGroup>org.owasp</pluginGroup>
-    </pluginGroups>   
+        <pluginGroup>org.owasp</pluginGroup>
+    </pluginGroups>
 </settings>
