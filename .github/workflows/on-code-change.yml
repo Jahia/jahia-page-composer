@@ -72,7 +72,7 @@ jobs:
           version: '1.29.2'
       - uses: actions/setup-node@v2
         with:
-          node-version: 14
+          node-version: 'lts/*'
       - uses: actions/checkout@v2
       - uses: jahia/jahia-modules-action/integration-tests@v2
         with:
