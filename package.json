@@ -29,6 +29,9 @@
   "jahia": {
     "remotes": {
       "jahia": "javascript/apps/remoteEntry.js"
+    },
+    "urlPatterns" : {
+      "jahia": "/page-composer/(?<workspace>\\S*?)/(?<language>\\S*?)/sites/(?<siteKey>\\S*?)/(?<pagePath>\\S*)"
     }
   },
   "dependencies": {
