@@ -30,9 +30,9 @@
     "remotes": {
       "jahia": "javascript/apps/remoteEntry.js"
     },
-    "urlPatterns" : [
-      "/(?<appName>\\S*?)/page-composer/(?<workspace>\\S*?)/(?<language>\\S*?)/sites/(?<siteKey>\\S*?)/(?<pagePath>\\S*)"
-    ]
+    "urlPatterns" : {
+      "jahia": "/page-composer/(?<workspace>\\S*?)/(?<language>\\S*?)/sites/(?<siteKey>\\S*?)/(?<pagePath>\\S*)"
+    }
   },
   "dependencies": {
     "@apollo/react-hooks": "^3.1.3",
