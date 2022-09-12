@@ -10,12 +10,15 @@ describe('Page creation tests', () => {
     before(function () {
         cy.executeGroovy('createSite.groovy', { SITEKEY: site })
         cy.login()
-        pageComposer = PageComposer.visit(site, 'en', 'home.html');
     })
 
     after(function () {
         cy.logout()
         cy.executeGroovy('deleteSite.groovy', { SITEKEY: site })
+    })
+
+    beforeEach(function () {
+        pageComposer = PageComposer.visit(site, 'en', 'home.html');
     })
 
     it('Special characters are handled correctly in page name', function () {
