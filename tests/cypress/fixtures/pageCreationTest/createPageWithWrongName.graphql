@@ -1,0 +1,9 @@
+mutation {
+    jcr {
+        mutateNode(pathOrId: "/sites/pageComposerSite/home") {
+            addChild(name: "list'asasa'an@##$%#$%@#%", primaryNodeType: "jnt:page") {
+
+            }
+        }
+    }
+}
