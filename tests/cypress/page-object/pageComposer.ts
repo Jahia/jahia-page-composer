@@ -109,15 +109,23 @@ export class PageComposer extends BasePage {
             cy.get('.pagesContextMenuAnthracite').contains('New page').click({force: true});
         });
 
-        cy.get('#jnt:page_jcr:title').should('be.visible').type(title);
-        cy.get('#nt:base_ce:systemName').should('be.visible').type(title);
-        cy.get('#jnt:page_j:templateName').should('be.visible')
+        cy.get('#jnt\\:page_jcr\\:title').should('be.visible').type(title);
+        cy.get('#nt\\:base_ce\\:systemName').should('be.visible').type(title);
+        cy.get('#select-jnt\\:page_j\\:templateName').should('be.visible')
             .click()
             .find('li[role="option"][data-value="home"]')
             .click();
 
         ce.save();
         return ce;
+    }
+
+    navigateToPage(name: string): PageComposer {
+        cy.iframe('#page-composer-frame', this.iFrameOptions).within(() => {
+            cy.get('#JahiaGxtPagesTab').contains(name).click({force: true});
+        });
+
+        return new PageComposer();
     }
 }
 
