@@ -6,6 +6,6 @@ export const pageComposerActions = registry => {
     registry.add('action', 'pageComposer', pageComposerAction, {
         buttonLabel: 'jcontent:label.contentManager.actions.pageComposer',
         buttonIcon: <OpenInBrowser/>,
-        targets: ['contentActions']
+        targets: ['contentActions:11']
     });
 };
