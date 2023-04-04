@@ -1,0 +1,15 @@
+query ($path: String!, $properties: [String]=[], $language: String="") {
+    jcr {
+        nodeByPath(path: $path) {
+            uuid
+            name
+        	properties(names: $properties, language: $language){
+              name
+              value
+            }
+            primaryNodeType {
+                name
+            }
+        }
+    }
+}

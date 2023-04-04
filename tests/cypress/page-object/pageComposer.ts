@@ -127,6 +127,11 @@ export class PageComposer extends BasePage {
 
         return new PageComposer();
     }
+
+    rightClick(element: string, operation: string) {
+        cy.get(`div[class *= "x-grid3-row"]:contains(${element})`).rightclick()
+        return cy.get(`span[class *= "x-menu-item"]:contains("${operation}"):not(:contains("${operation} "))`).click()
+    };
 }
 
 export class ContentTypeSelector extends BaseComponent {
