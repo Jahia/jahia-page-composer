@@ -9,6 +9,9 @@ services:
             - jahia:127.0.0.1
         networks:
             - stack
+        environment:
+            JAHIA_LICENSE: ${JAHIA_LICENSE}
+            SUPER_USER_PASSWORD: ${SUPER_USER_PASSWORD}
     # Cypress container
     cypress:
         image: '${TESTS_IMAGE}'
@@ -24,7 +27,6 @@ services:
             - JAHIA_URL=${JAHIA_URL}
             - JAHIA_HOST=${JAHIA_HOST}
             - JAHIA_PORT=${JAHIA_PORT}
-            - JAHIA_LICENSE=${JAHIA_LICENSE} 
             - NEXUS_USERNAME=${NEXUS_USERNAME}
             - NEXUS_PASSWORD=${NEXUS_PASSWORD}
         networks:
