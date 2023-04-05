@@ -24,6 +24,7 @@ services:
             - JAHIA_URL=${JAHIA_URL}
             - JAHIA_HOST=${JAHIA_HOST}
             - JAHIA_PORT=${JAHIA_PORT}
+            - JAHIA_LICENSE=${JAHIA_LICENSE}
             - NEXUS_USERNAME=${NEXUS_USERNAME}
             - NEXUS_PASSWORD=${NEXUS_PASSWORD}
         networks:
