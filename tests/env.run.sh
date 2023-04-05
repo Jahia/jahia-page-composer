@@ -4,10 +4,9 @@
 
 source ./set-env.sh
 
-source .env
-
 #!/usr/bin/env bash
 START_TIME=$SECONDS
+
 echo " == Using MANIFEST: ${MANIFEST}"
 echo " == Using JAHIA_URL= ${JAHIA_URL}"
 
@@ -31,9 +30,9 @@ else
   curl ${MANIFEST} --output ./run-artifacts/curl-manifest
   MANIFEST="curl-manifest"
 fi
-sed -i "" -e "s/NEXUS_USERNAME/${NEXUS_USERNAME}/g" ./run-artifacts/${MANIFEST}
-sed -i "" -e "s/NEXUS_PASSWORD/${NEXUS_PASSWORD}/g" ./run-artifacts/${MANIFEST}
-sed -i "" -e "s/JAHIA_VERSION/${JAHIA_VERSION}/g" ./run-artifacts/${MANIFEST}
+sed -i -e "s/NEXUS_USERNAME/$(echo ${NEXUS_USERNAME} | sed -e 's/\\/\\\\/g; s/\//\\\//g; s/&/\\\&/g')/g" ./run-artifacts/${MANIFEST}
+sed -i -e "s/NEXUS_PASSWORD/$(echo ${NEXUS_PASSWORD} | sed -e 's/\\/\\\\/g; s/\//\\\//g; s/&/\\\&/g')/g" ./run-artifacts/${MANIFEST}
+sed -i -e "s/JAHIA_VERSION/$(echo ${JAHIA_VERSION})/g" ./run-artifacts/${MANIFEST}
 
 echo "$(date +'%d %B %Y - %k:%M') == Warming up the environement =="
 curl -u root:${SUPER_USER_PASSWORD} -X POST ${JAHIA_URL}/modules/api/provisioning --form script="@./run-artifacts/${MANIFEST};type=text/yaml"
@@ -66,10 +65,10 @@ if [[ $INSTALLED_MODULE_VERSION == "UNKNOWN" ]]; then
   exit 1
 fi
 
-echo "$(date +'%d %B %Y - %k:%M')== Sleeping for an additional 120 seconds =="
-sleep 120
-echo "$(date +'%d %B %Y - %k:%M')== DONE - Sleeping for an additional 120 seconds =="
-curl -u root:${SUPER_USER_PASSWORD} -X POST ${JAHIA_URL}/modules/api/provisioning --form script='[{"karafCommand":"bundle:list"}]'
+# echo "$(date +'%d %B %Y - %k:%M')== Sleeping for an additional 120 seconds =="
+# sleep 120
+# echo "$(date +'%d %B %Y - %k:%M')== DONE - Sleeping for an additional 120 seconds =="
+# curl -u root:${SUPER_USER_PASSWORD} -X POST ${JAHIA_URL}/modules/api/provisioning --form script='[{"karafCommand":"bundle:list"}]'
 echo "$(date +'%d %B %Y - %k:%M')== Run tests =="
 yarn e2e:ci
 if [[ $? -eq 0 ]]; then
