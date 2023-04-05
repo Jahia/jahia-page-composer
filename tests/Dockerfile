@@ -1,4 +1,4 @@
-FROM cypress/base:13.8.0
+FROM cypress/base:14.21.0
 
 RUN apt-get update && apt-get install -y jq
 
