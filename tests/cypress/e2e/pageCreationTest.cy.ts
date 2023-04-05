@@ -1,11 +1,9 @@
-import {PageComposer} from '../page-object/pageComposer';
-import {ContentEditor} from '../page-object/contentEditor';
+import { PageComposer } from '../page-object/pageComposer'
 
 describe('Page creation tests', () => {
-    const site = 'pageComposerSite';
-    const nameWithSpecialChars = 'list\'asasa\'an@##$%#$%@#%';
-    let pageComposer: PageComposer;
-    let contentEditor: ContentEditor;
+    const site = 'pageComposerSite'
+    const nameWithSpecialChars = "list'asasa'an@##$%#$%@#%"
+    let pageComposer: PageComposer
 
     before(function () {
         cy.executeGroovy('createSite.groovy', { SITEKEY: site })
@@ -18,14 +16,14 @@ describe('Page creation tests', () => {
     })
 
     beforeEach(function () {
-        pageComposer = PageComposer.visit(site, 'en', 'home.html');
+        pageComposer = PageComposer.visit(site, 'en', 'home.html')
     })
 
     it('Special characters are handled correctly in page name', function () {
-        pageComposer.createPage(nameWithSpecialChars);
-        PageComposer.visit(site, 'en', 'home.html');
-        pageComposer.navigateToPage(nameWithSpecialChars);
+        pageComposer.createPage(nameWithSpecialChars)
+        PageComposer.visit(site, 'en', 'home.html')
+        pageComposer.navigateToPage(nameWithSpecialChars)
         // TODO this will need to be changed to accommodate updated functionality
-        cy.get('h1').contains('Page not found');
+        cy.get('h1').contains('Page not found')
     })
 })

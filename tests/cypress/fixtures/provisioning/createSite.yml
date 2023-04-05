@@ -1,0 +1,4 @@
+- createSite:
+  siteKey: "testsite"
+  templateSet: "dx-base-demo-templates"
+  language: "en"
