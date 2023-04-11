@@ -21,7 +21,6 @@ describe('Copy Cut and Paste tests with page composer', () => {
         cy.login()
         cy.visit('/cms/edit/default/en/sites/digitall/home.html?redirect=false')
         composer.rightClick('About', 'Copy')
-        // eslint-disable-next-line
         cy.visit('/cms/edit/default/en/sites/testsite/home.html?redirect=false')
         composer.rightClickUntil('Home', 'Paste').then(() => {
             // eslint-disable-next-line
@@ -37,7 +36,6 @@ describe('Copy Cut and Paste tests with page composer', () => {
         cy.login()
         cy.visit('/cms/edit/default/en/sites/digitall/home.html?redirect=false')
         composer.rightClick('About', 'Copy')
-        // eslint-disable-next-line
         composer.rightClickUntil('Home', 'Paste').then(() => {
             // eslint-disable-next-line
             cy.wait(5000)
