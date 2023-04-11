@@ -21,8 +21,12 @@ describe('Copy Cut and Paste tests with page composer', () => {
         cy.login()
         cy.visit('/cms/edit/default/en/sites/digitall/home.html?redirect=false')
         composer.rightClick('About', 'Copy')
+        // eslint-disable-next-line
+        cy.wait(5000)
         cy.visit('/cms/edit/default/en/sites/testsite/home.html?redirect=false')
         composer.rightClick('Home', 'Paste').then(() => {
+            // eslint-disable-next-line
+            cy.wait(5000)
             checkDescriptions('/sites/testsite/home/about')
             GraphqlUtils.deleteNode('/sites/testsite/home/about')
         })
@@ -34,7 +38,11 @@ describe('Copy Cut and Paste tests with page composer', () => {
         cy.login()
         cy.visit('/cms/edit/default/en/sites/digitall/home.html?redirect=false')
         composer.rightClick('About', 'Copy')
+        // eslint-disable-next-line
+        cy.wait(5000)
         composer.rightClick('Home', 'Paste').then(() => {
+            // eslint-disable-next-line
+            cy.wait(5000)
             cy.reload()
             cy.get('div[class *= "x-grid3-row"]:contains("About")').should('have.length', 2)
             checkDescriptions('/sites/digitall/home/about-1')
@@ -49,7 +57,11 @@ describe('Copy Cut and Paste tests with page composer', () => {
         cy.login()
         cy.visit('/cms/edit/default/en/sites/digitall/home.html?redirect=false')
         composer.rightClick('About', 'Copy')
+        // eslint-disable-next-line
+        cy.wait(5000)
         composer.rightClick('Newsroom', 'Paste').then(() => {
+            // eslint-disable-next-line
+            cy.wait(5000)
             cy.reload()
             checkDescriptions('/sites/digitall/home/newsroom/about')
             GraphqlUtils.getNode('/sites/digitall/home/newsroom/about', 'jcr:title', 'en', 'About')
@@ -63,8 +75,12 @@ describe('Copy Cut and Paste tests with page composer', () => {
         cy.login()
         cy.visit('/cms/edit/default/en/sites/digitall/home.html?redirect=false')
         composer.rightClick('About', 'Cut')
+        // eslint-disable-next-line
+        cy.wait(5000)
         cy.visit('/cms/edit/default/en/sites/testsite/home.html?redirect=false')
         composer.rightClick('Home', 'Paste').then(() => {
+            // eslint-disable-next-line
+            cy.wait(5000)
             GraphqlUtils.getVanityUrl('/sites/testsite/home/about', ['en'], '/about')
         })
         composer.rightClick('About', 'Cut')
