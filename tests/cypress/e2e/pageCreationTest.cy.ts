@@ -24,6 +24,7 @@ describe('Page creation tests', () => {
         PageComposer.visit(site, 'en', 'home.html')
         pageComposer.navigateToPage(nameWithSpecialChars)
         // TODO this will need to be changed to accommodate updated functionality
+        // TODO TECH-1231 fix the test
         cy.get('h1').contains('Page not found')
     })
 })
