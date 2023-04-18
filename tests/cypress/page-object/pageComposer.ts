@@ -130,26 +130,6 @@ export class PageComposer extends BasePage {
 
         return new PageComposer()
     }
-
-    rightClick(element: string, operation: string) {
-        cy.get(`div[class *= "x-grid3-row"]:contains(${element})`).rightclick()
-        return cy.get(`span[class *= "x-menu-item"]:contains("${operation}"):not(:contains("${operation} "))`).click()
-    }
-
-    rightClickUntil = (element: string, operation: string) => {
-        cy.repeatUntil(
-            `span[class *= "x-menu-item"]:contains("${operation}"):not(:contains("${operation} ")):visible`,
-            {
-                attempts: 20,
-                callback: () => {
-                    cy.get('body').click()
-                    cy.get(`div[class *= "x-grid3-row"]:contains(${element})`).rightclick()
-                },
-                delay: 1000,
-            },
-        )
-        return cy.get(`span[class *= "x-menu-item"]:contains("${operation}"):not(:contains("${operation} "))`).click()
-    }
 }
 
 export class ContentTypeSelector extends BaseComponent {

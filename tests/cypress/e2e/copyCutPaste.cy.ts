@@ -1,95 +1,129 @@
-import { GraphqlUtils } from '../utils/graphqlUtils'
-import { PageComposer } from '../page-object/pageComposer'
+import { CustomPageComposer } from '../page-object/pageComposerOverride'
+import {
+    createSite,
+    deleteSite,
+    getNodeByPath,
+    deleteNode,
+    setNodeProperty,
+    deleteNodeProperty,
+    addVanityUrl,
+    getVanityUrl,
+    removeVanityUrl,
+} from '@jahia/cypress'
 
 const checkDescriptions = (path: string) => {
-    GraphqlUtils.getNode(path, 'jcr:description', 'en', "That's the description")
-    GraphqlUtils.getNode(path, 'jcr:description', 'fr', "C'est la description")
+    getNodeByPath(path, ['jcr:description'], 'en').then((result) => {
+        expect(result?.data?.jcr?.nodeByPath?.name).to.eq(path.split('/').pop())
+        expect(result?.data?.jcr?.nodeByPath?.properties[0].value).to.eq("That's the description")
+    })
+    getNodeByPath(path, ['jcr:description'], 'fr').then((result) => {
+        expect(result?.data?.jcr?.nodeByPath?.name).to.eq(path.split('/').pop())
+        expect(result?.data?.jcr?.nodeByPath?.properties[0].value).to.eq("C'est la description")
+    })
 }
 
 describe('Copy Cut and Paste tests with page composer', () => {
     before('Create required content', () => {
         cy.login()
-        cy.executeGroovy('createSite.groovy', { SITEKEY: 'testsite' })
-        GraphqlUtils.setProperty('/sites/digitall/home/about', 'jcr:description', "That's the description", 'en')
-        GraphqlUtils.setProperty('/sites/digitall/home/about', 'jcr:description', "C'est la description", 'fr')
-        GraphqlUtils.addVanityUrl('/sites/digitall/home/about', 'en', '/about')
+        createSite('testsite')
+        setNodeProperty('/sites/digitall/home/about', 'jcr:description', "That's the description", 'en')
+        setNodeProperty('/sites/digitall/home/about', 'jcr:description', "C'est la description", 'fr')
+        addVanityUrl('/sites/digitall/home/about', 'en', '/about')
         cy.logout()
     })
 
     it('Copy and paste in another site', () => {
-        const composer = new PageComposer()
+        const composer = new CustomPageComposer()
         cy.login()
-        cy.visit('/cms/edit/default/en/sites/digitall/home.html?redirect=false')
-        composer.rightClick('About', 'Copy')
-        cy.visit('/cms/edit/default/en/sites/testsite/home.html?redirect=false')
-        composer.rightClickUntil('Home', 'Paste').then(() => {
+        CustomPageComposer.visit('digitall', 'en', 'home.html')
+        let contextMenu = composer.openContextualMenuOnLeftTree('About')
+        contextMenu.copy()
+        CustomPageComposer.visit('testsite', 'en', 'home.html')
+        contextMenu = composer.openContextualMenuOnLeftTreeUntil('Home', 'Paste')
+        contextMenu.paste().then(() => {
             // eslint-disable-next-line
             cy.wait(5000)
             checkDescriptions('/sites/testsite/home/about')
-            GraphqlUtils.deleteNode('/sites/testsite/home/about')
+            deleteNode('/sites/testsite/home/about')
         })
         cy.logout()
     })
 
     it('Copy and paste under the same site, same parent', () => {
-        const composer = new PageComposer()
+        const composer = new CustomPageComposer()
         cy.login()
-        cy.visit('/cms/edit/default/en/sites/digitall/home.html?redirect=false')
-        composer.rightClick('About', 'Copy')
-        composer.rightClickUntil('Home', 'Paste').then(() => {
+        CustomPageComposer.visit('digitall', 'en', 'home.html')
+        let contextMenu = composer.openContextualMenuOnLeftTree('About')
+        contextMenu.copy()
+        contextMenu = composer.openContextualMenuOnLeftTreeUntil('Home', 'Paste')
+        contextMenu.paste().then(() => {
             // eslint-disable-next-line
             cy.wait(5000)
             cy.reload()
-            cy.get('div[class *= "x-grid3-row"]:contains("About")').should('have.length', 2)
+            cy.iframe('#page-composer-frame').within(() => {
+                cy.get('div[class *= "x-grid3-row"]:contains("About")').should('have.length', 2)
+            })
             checkDescriptions('/sites/digitall/home/about-1')
-            GraphqlUtils.getNode('/sites/digitall/home/about-1', 'jcr:title', 'en', 'About')
-            GraphqlUtils.deleteNode('/sites/digitall/home/about-1')
+            getNodeByPath('/sites/digitall/home/about-1', ['jcr:title'], 'en').then((result) => {
+                expect(result?.data?.jcr?.nodeByPath?.name).to.eq('about-1')
+                expect(result?.data?.jcr?.nodeByPath?.properties[0].value).to.eq('About')
+            })
+            deleteNode('/sites/digitall/home/about-1')
         })
         cy.logout()
     })
 
     it('Copy and paste under the same site, other parent', () => {
-        const composer = new PageComposer()
+        const composer = new CustomPageComposer()
         cy.login()
-        cy.visit('/cms/edit/default/en/sites/digitall/home.html?redirect=false')
-        composer.rightClick('About', 'Copy')
-        // eslint-disable-next-line
-        cy.wait(5000)
-        composer.rightClickUntil('Newsroom', 'Paste').then(() => {
+        CustomPageComposer.visit('digitall', 'en', 'home.html')
+        let contextMenu = composer.openContextualMenuOnLeftTree('About')
+        contextMenu.copy()
+        contextMenu = composer.openContextualMenuOnLeftTreeUntil('Newsroom', 'Paste')
+        contextMenu.paste().then(() => {
             // eslint-disable-next-line
             cy.wait(5000)
             cy.reload()
             checkDescriptions('/sites/digitall/home/newsroom/about')
-            GraphqlUtils.getNode('/sites/digitall/home/newsroom/about', 'jcr:title', 'en', 'About')
-            GraphqlUtils.deleteNode('/sites/digitall/home/newsroom/about')
+            getNodeByPath('/sites/digitall/home/newsroom/about', ['jcr:title'], 'en').then((result) => {
+                expect(result?.data?.jcr?.nodeByPath?.name).to.eq('about')
+                expect(result?.data?.jcr?.nodeByPath?.properties[0].value).to.eq('About')
+            })
+            deleteNode('/sites/digitall/home/newsroom/about')
         })
         cy.logout()
     })
 
     it("Cut and paste under another site / check vanity url isn't the same", () => {
-        const composer = new PageComposer()
+        const composer = new CustomPageComposer()
         cy.login()
-        cy.visit('/cms/edit/default/en/sites/digitall/home.html?redirect=false')
-        composer.rightClick('About', 'Cut')
-        cy.visit('/cms/edit/default/en/sites/testsite/home.html?redirect=false')
-        composer.rightClickUntil('Home', 'Paste').then(() => {
+        CustomPageComposer.visit('digitall', 'en', 'home.html')
+        let contextMenu = composer.openContextualMenuOnLeftTree('About')
+        contextMenu.cut()
+        CustomPageComposer.visit('testsite', 'en', 'home.html')
+        contextMenu = composer.openContextualMenuOnLeftTreeUntil('Home', 'Paste')
+        contextMenu.paste().then(() => {
             // eslint-disable-next-line
             cy.wait(5000)
-            GraphqlUtils.getVanityUrl('/sites/testsite/home/about', ['en'], '/about')
+            getVanityUrl('/sites/testsite/home/about', ['en']).then((result) => {
+                expect(result?.data?.jcr?.nodeByPath?.vanityUrls[0]?.url).to.eq('/about')
+            })
         })
-        composer.rightClick('About', 'Cut')
-        cy.visit('/cms/edit/default/en/sites/digitall/home.html?redirect=false')
-        composer.rightClickUntil('Home', 'Paste')
+        contextMenu = composer.openContextualMenuOnLeftTree('About')
+        contextMenu.cut()
+        CustomPageComposer.visit('digitall', 'en', 'home.html')
+        contextMenu = composer.openContextualMenuOnLeftTreeUntil('Home', 'Paste')
+        contextMenu.paste()
 
         cy.logout()
     })
 
     after('Clean content', () => {
         cy.login()
-        // cy.executeGroovy('deleteSite.groovy', { SITEKEY: 'testsite' })
-        GraphqlUtils.deleteProperty('/sites/digitall/home/about', 'jcr:description', 'en')
-        GraphqlUtils.deleteProperty('/sites/digitall/home/about', 'jcr:description', 'fr')
-        GraphqlUtils.removeVanityUrl('/sites/digitall/home/about', '/about')
+        deleteSite('testsite')
+        deleteNodeProperty('/sites/digitall/home/about', 'jcr:description', 'en')
+        deleteNodeProperty('/sites/digitall/home/about', 'jcr:description', 'fr')
+        removeVanityUrl('/sites/digitall/home/about', '/about')
         cy.logout()
     })
 })
