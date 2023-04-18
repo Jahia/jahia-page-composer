@@ -50,7 +50,7 @@ done
 cd ..
 
 echo "$(date +'%d %B %Y - %k:%M') == Fetching the list of installed modules =="
-./node_modules/jahia/jahia-reporter/bin/run utils:modules \
+./node_modules/@jahia/jahia-reporter/bin/run utils:modules \
   --moduleId="${MODULE_ID}" \
   --jahiaUrl="${JAHIA_URL}" \
   --jahiaPassword="${SUPER_USER_PASSWORD}" \
