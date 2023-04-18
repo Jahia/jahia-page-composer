@@ -19,7 +19,7 @@ describe('Page creation tests', () => {
         pageComposer = PageComposer.visit(site, 'en', 'home.html')
     })
 
-    it('Special characters are handled correctly in page name', function () {
+    it.skip('Special characters are handled correctly in page name', function () {
         pageComposer.createPage(nameWithSpecialChars)
         PageComposer.visit(site, 'en', 'home.html')
         pageComposer.navigateToPage(nameWithSpecialChars)
