@@ -9,13 +9,23 @@ import {
     addVanityUrl,
     getVanityUrl,
     removeVanityUrl,
+    moveNode,
 } from '@jahia/cypress'
 
 const checkDescriptions = (path: string) => {
-    getNodeByPath(path, ['jcr:description'], 'en').then((result) => {
-        expect(result?.data?.jcr?.nodeByPath?.name).to.eq(path.split('/').pop())
-        expect(result?.data?.jcr?.nodeByPath?.properties[0].value).to.eq("That's the description")
-    })
+    cy.waitUntil(
+        () =>
+            getNodeByPath(path, ['jcr:description'], 'en').then(
+                (result) =>
+                    result?.data?.jcr?.nodeByPath?.name == path.split('/').pop() &&
+                    result?.data?.jcr?.nodeByPath?.properties[0].value == "That's the description",
+            ),
+        {
+            timeout: 30000,
+            interval: 1000,
+            verbose: true,
+        },
+    )
     getNodeByPath(path, ['jcr:description'], 'fr').then((result) => {
         expect(result?.data?.jcr?.nodeByPath?.name).to.eq(path.split('/').pop())
         expect(result?.data?.jcr?.nodeByPath?.properties[0].value).to.eq("C'est la description")
@@ -38,11 +48,10 @@ describe('Copy Cut and Paste tests with page composer', () => {
         CustomPageComposer.visit('digitall', 'en', 'home.html')
         let contextMenu = composer.openContextualMenuOnLeftTree('About')
         contextMenu.copy()
+        composer.openContextualMenuOnLeftTreeUntil('Newsroom', 'Paste')
         CustomPageComposer.visit('testsite', 'en', 'home.html')
         contextMenu = composer.openContextualMenuOnLeftTreeUntil('Home', 'Paste')
         contextMenu.paste().then(() => {
-            // eslint-disable-next-line
-            cy.wait(5000)
             checkDescriptions('/sites/testsite/home/about')
             deleteNode('/sites/testsite/home/about')
         })
@@ -57,13 +66,11 @@ describe('Copy Cut and Paste tests with page composer', () => {
         contextMenu.copy()
         contextMenu = composer.openContextualMenuOnLeftTreeUntil('Home', 'Paste')
         contextMenu.paste().then(() => {
-            // eslint-disable-next-line
-            cy.wait(5000)
+            checkDescriptions('/sites/digitall/home/about-1')
             cy.reload()
             cy.iframe('#page-composer-frame').within(() => {
                 cy.get('div[class *= "x-grid3-row"]:contains("About")').should('have.length', 2)
             })
-            checkDescriptions('/sites/digitall/home/about-1')
             getNodeByPath('/sites/digitall/home/about-1', ['jcr:title'], 'en').then((result) => {
                 expect(result?.data?.jcr?.nodeByPath?.name).to.eq('about-1')
                 expect(result?.data?.jcr?.nodeByPath?.properties[0].value).to.eq('About')
@@ -81,9 +88,6 @@ describe('Copy Cut and Paste tests with page composer', () => {
         contextMenu.copy()
         contextMenu = composer.openContextualMenuOnLeftTreeUntil('Newsroom', 'Paste')
         contextMenu.paste().then(() => {
-            // eslint-disable-next-line
-            cy.wait(5000)
-            cy.reload()
             checkDescriptions('/sites/digitall/home/newsroom/about')
             getNodeByPath('/sites/digitall/home/newsroom/about', ['jcr:title'], 'en').then((result) => {
                 expect(result?.data?.jcr?.nodeByPath?.name).to.eq('about')
@@ -100,21 +104,23 @@ describe('Copy Cut and Paste tests with page composer', () => {
         CustomPageComposer.visit('digitall', 'en', 'home.html')
         let contextMenu = composer.openContextualMenuOnLeftTree('About')
         contextMenu.cut()
+        composer.openContextualMenuOnLeftTreeUntil('Newsroom', 'Paste')
         CustomPageComposer.visit('testsite', 'en', 'home.html')
         contextMenu = composer.openContextualMenuOnLeftTreeUntil('Home', 'Paste')
         contextMenu.paste().then(() => {
-            // eslint-disable-next-line
-            cy.wait(5000)
-            getVanityUrl('/sites/testsite/home/about', ['en']).then((result) => {
-                expect(result?.data?.jcr?.nodeByPath?.vanityUrls[0]?.url).to.eq('/about')
-            })
+            cy.waitUntil(
+                () =>
+                    getVanityUrl('/sites/testsite/home/about', ['en']).then(
+                        (result) => result?.data?.jcr?.nodeByPath?.vanityUrls[0]?.url == '/about',
+                    ),
+                {
+                    timeout: 30000,
+                    interval: 1000,
+                    verbose: true,
+                },
+            )
+            moveNode('/sites/testsite/home/about', '/sites/digitall/home', 'about')
         })
-        contextMenu = composer.openContextualMenuOnLeftTree('About')
-        contextMenu.cut()
-        CustomPageComposer.visit('digitall', 'en', 'home.html')
-        contextMenu = composer.openContextualMenuOnLeftTreeUntil('Home', 'Paste')
-        contextMenu.paste()
-
         cy.logout()
     })
 
