@@ -24,7 +24,7 @@ function initialValue(location, {site, language, path, lastVisitedSite}) {
 }
 
 function getIFramePath(iFrameSubPath, queryString) {
-    return `/cms/edit${iFrameSubPath}?redirect=false${queryString}`;
+    return `/cms/edit${iFrameSubPath}?redirect=false${queryString.replace('&redirect=false', '')}`;
 }
 
 function getPathFromChildIFrame() {
