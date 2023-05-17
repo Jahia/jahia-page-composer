@@ -8,7 +8,7 @@ import {useSelector} from 'react-redux';
 
 const PATH = '/page-composer';
 
-export const PageComposerGroup = () => {
+export const PageComposerItem = props => {
     const {t} = useTranslation('jahia-page-composer');
     const history = useHistory();
     const current = useSelector(state => ({language: state.language, site: state.site}));
@@ -18,7 +18,7 @@ export const PageComposerGroup = () => {
 
     return (
         <PrimaryNavItem
-            role="page-composer-menu-item"
+            {...props}
             isSelected={history.location.pathname.startsWith(PATH)}
             icon={<JContent/>}
             label={t('jahia-page-composer:label')}
@@ -27,10 +27,10 @@ export const PageComposerGroup = () => {
 };
 
 export const pageComposerRoutes = registry => {
-    registry.add('primary-nav-item', 'pageComposerNavGroup', {
+    registry.add('primary-nav-item', 'page-composer', {
         targets: ['nav-root-top:1'],
         requiredPermission: 'pageComposerAccess',
-        render: () => <PageComposerGroup/>
+        render: () => <PageComposerItem/>
     });
 
     registry.add('route', 'pageComposerRoute', {
