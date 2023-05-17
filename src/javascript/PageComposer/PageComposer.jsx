@@ -175,7 +175,8 @@ export default function () {
 
     function checkFrameStatus(f) {
         let element = f.contentWindow.document.querySelector('head meta[name=\'description\']');
-        return (element && element.attributes.content.value.startsWith('40'));
+        const errorCodes = ['400', '401', '403', '404'];
+        return errorCodes.includes(element?.attributes?.content?.value);
     }
 
     const iFrameOnLoad = e => {
