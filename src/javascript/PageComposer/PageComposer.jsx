@@ -72,7 +72,7 @@ function updateStoreAndHistory(pathFromChildIFrame) {
             const nodePath = `/sites/${siteKey}${parentPath}/${nodeName}`;
 
             if (history.location.pathname !== newPath || history.location.search !== queryString) {
-                history.replace(newPath + queryString);
+                history.replace(newPath + queryString + window.location.hash);
                 dispatch(pcSetPath(relSitePath));
                 dispatch(pcSetLastVisitedSite(siteKey));
             }
