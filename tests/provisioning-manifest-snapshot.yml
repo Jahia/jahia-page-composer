@@ -26,4 +26,4 @@
 
 - editConfiguration: "org.jahia.modules.jcontent"
   properties:
-    hideLegacyPageComposer: false
+    hideLegacyPageComposer: "false"
