@@ -2,9 +2,9 @@ import React from 'react';
 import {useHistory} from 'react-router-dom';
 import {PrimaryNavItem} from '@jahia/moonstone';
 import {useTranslation} from 'react-i18next';
-import JContent from '@jahia/moonstone/dist/icons/JContent';
 import PageComposer from './PageComposer';
 import {useSelector} from 'react-redux';
+import SvgLegacyPageComposer from './icons/LegacyPageComposer';
 
 const PATH = '/page-composer';
 
@@ -20,7 +20,7 @@ export const PageComposerItem = props => {
         <PrimaryNavItem
             {...props}
             isSelected={history.location.pathname.startsWith(PATH)}
-            icon={<JContent/>}
+            icon={<SvgLegacyPageComposer/>}
             label={t('jahia-page-composer:label')}
             onClick={() => history.push(PATH)}/>
     );
