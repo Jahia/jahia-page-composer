@@ -28,11 +28,11 @@ export class PageComposerContextualMenu extends BasePage {
     }
 
     delete() {
-        return this.execute(`Delete`);
+        return this.execute(`Delete`)
     }
 
     undelete() {
-        return this.execute(`Undelete`);
+        return this.execute(`Undelete`)
     }
 
     execute(action: string): Cypress.Chainable {

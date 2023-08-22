@@ -111,12 +111,11 @@ export class PageComposer extends BasePage {
             cy.get('.pagesContextMenuAnthracite').contains('New page').click({ force: true })
         })
 
-        cy.get('#jnt\\:page_jcr\\:title').click().type(title, {force:true});
+        cy.get('#jnt\\:page_jcr\\:title').click().type(title, { force: true })
 
-        if(systemName) {
-            const sysName = cy.get('#nt\\:base_ce\\:systemName');
-            sysName.clear();
-            sysName.type(systemName, {force: true});
+        if (systemName) {
+            cy.get('#nt\\:base_ce\\:systemName').clear()
+            cy.get('#nt\\:base_ce\\:systemName').type(systemName, { force: true })
         }
 
         cy.get('#select-jmix\\:hasTemplateNode_j\\:templateName')
@@ -124,8 +123,8 @@ export class PageComposer extends BasePage {
             .click()
             .find('li[role="option"][data-value="home"]')
             .click()
-        if(save === undefined || save) {
-            ce.save();
+        if (save === undefined || save) {
+            ce.save()
         }
         return ce
     }
