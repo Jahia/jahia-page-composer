@@ -1,30 +1,86 @@
-import { PageComposer } from '../page-object/pageComposer'
+import { PageComposer } from '../page-object/pageComposer';
+import { getComponentByRole, Button, deleteNode, publishAndWaitJobEnding, getNodeByPath, createSite, deleteSite } from '@jahia/cypress';
+import { CustomPageComposer } from '../page-object/pageComposerOverride';
+
+
+const undelete = (pageTitle: string) => {
+    const customPageComposer = new CustomPageComposer();
+    const contextualMenu = customPageComposer.openContextualMenuOnLeftTree(pageTitle);
+    contextualMenu.undelete();
+    cy.get('button[data-sel-role="delete-undelete-button"]').click();
+}
+
+const markForDeletion = (pageTitle: string) => {
+    const customPageComposer = new CustomPageComposer();
+    const contextualMenu = customPageComposer.openContextualMenuOnLeftTree(pageTitle);
+    contextualMenu.delete();
+    return cy.get('button[data-sel-role="delete-mark-button"]').click();
+}
 
 describe('Page creation tests', () => {
-    const site = 'pageComposerSite'
-    const nameWithSpecialChars = "list'asasa'an@##$%#$%@#%"
-    let pageComposer: PageComposer
+    const site = 'pageComposerSite';
+    const basicName = "New page 1";
+    const basicSystemName = "new-page-1";
+    const nameWithSpecialChars = "list'asasa'an@##$%#$%@#%";
+    const systemName = "listSysName";
+    let pageComposer: PageComposer;
 
-    before(function () {
-        cy.executeGroovy('createSite.groovy', { SITEKEY: site })
-        cy.login()
+    before(() => {
+        createSite(site);
     })
 
-    after(function () {
-        cy.logout()
-        cy.executeGroovy('deleteSite.groovy', { SITEKEY: site })
+    after(() => {
+        cy.logout();
+        deleteSite(site);
     })
 
-    beforeEach(function () {
-        pageComposer = PageComposer.visit(site, 'en', 'home.html')
+    beforeEach(() => {
+        cy.login();
+        pageComposer = PageComposer.visit(site, 'en', 'home.html');
     })
 
-    it.skip('Special characters are handled correctly in page name', function () {
-        pageComposer.createPage(nameWithSpecialChars)
-        PageComposer.visit(site, 'en', 'home.html')
-        pageComposer.navigateToPage(nameWithSpecialChars)
-        // TODO this will need to be changed to accommodate updated functionality
-        // TODO TECH-1231 fix the test
-        cy.get('h1').contains('Page not found')
+    it('Base test', () => {
+        pageComposer.createPage(basicName, basicSystemName);
+        markForDeletion(basicName);
+        cy.reload();
+        undelete(basicName);
+        cy.reload();
+        markForDeletion(basicName);
+        publishAndWaitJobEnding('/sites/' + site);
+        cy.apollo({
+            errorPolicy: 'all',
+            variables: {
+                path: `/sites/${site}/home/${basicSystemName}`
+            },
+            queryFile: 'graphql/jcr/query/getNodeByPath.graphql'
+        }).then(result => {
+            expect(result.errors[0].message).to.contain("javax.jcr.PathNotFoundException");
+        });
+        pageComposer.createPage(basicName, basicSystemName);
+        cy.reload();
+        cy.apollo({
+            errorPolicy: 'all',
+            variables: {
+                path: `/sites/${site}/home/${basicSystemName}`
+            },
+            queryFile: 'graphql/jcr/query/getNodeByPath.graphql'
+        }).then(result => {
+            expect(result.errors).to.not.exist;
+        });
+        deleteNode(`/sites/${site}/home/${basicSystemName}`);
+    })
+
+    it('Special characters are handled correctly in page name', () => {
+        pageComposer.createPage(nameWithSpecialChars, systemName);
+        PageComposer.visit(site, 'en', 'home.html');
+        pageComposer.navigateToPage(nameWithSpecialChars);
+        pageComposer.shouldContain(nameWithSpecialChars);
+        deleteNode(`/sites/${site}/home/${systemName}`);
+    })
+
+    it('Special characters are not allowed in system name', () => {
+    pageComposer.createPage(nameWithSpecialChars, nameWithSpecialChars, false);
+    getComponentByRole(Button, 'createButton').click()
+    cy.get('div[data-sel-role="dialog-errorBeforeSave"]').contains('System name').should('be.visible');
     })
 })
