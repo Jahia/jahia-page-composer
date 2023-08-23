@@ -27,6 +27,14 @@ export class PageComposerContextualMenu extends BasePage {
         return this.execute('Paste')
     }
 
+    delete() {
+        return this.execute(`Delete`)
+    }
+
+    undelete() {
+        return this.execute(`Undelete`)
+    }
+
     execute(action: string): Cypress.Chainable {
         cy.log('Execute action: ' + action)
         return cy.iframe('#page-composer-frame', this.iFrameOptions).within(() => {
