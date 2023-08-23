@@ -104,24 +104,28 @@ export class PageComposer extends BasePage {
         return new ContentEditor()
     }
 
-    createPage(title: string, systemName?: string, save?: boolean): ContentEditor {
+    createPage(title: string, systemName?: string, save?: boolean, template?: string): ContentEditor {
         const ce = new ContentEditor()
         cy.iframe('#page-composer-frame', this.iFrameOptions).within(() => {
             cy.get('#JahiaGxtPagesTab').contains('Home').rightclick({ force: true })
             cy.get('.pagesContextMenuAnthracite').contains('New page').click({ force: true })
         })
 
-        cy.get('#jnt\\:page_jcr\\:title').click().type(title, { force: true })
+        cy.get('#jnt\\:page_jcr\\:title').type(title, { force: true })
 
         if (systemName) {
-            cy.get('#nt\\:base_ce\\:systemName').clear()
+            cy.get('#nt\\:base_ce\\:systemName').clear({ force: true })
             cy.get('#nt\\:base_ce\\:systemName').type(systemName, { force: true })
+        }
+
+        if (!template) {
+            template = 'home'
         }
 
         cy.get('#select-jmix\\:hasTemplateNode_j\\:templateName')
             .should('be.visible')
             .click()
-            .find('li[role="option"][data-value="home"]')
+            .find(`li[role="option"][data-value="${template}"]`)
             .click()
         if (save === undefined || save) {
             ce.save()

@@ -62,4 +62,25 @@ export class CustomPageComposer extends PageComposer {
         })
         return new PageComposerContextualMenu('.pagesContextMenuAnthracite')
     }
+
+    openContextualMenuOnContentUntil(selector: string | number | symbol, action: string) {
+        cy.iframe('#page-composer-frame', this.iFrameOptions).within(() => {
+            recurse(
+                () =>
+                    cy.iframe('.gwt-Frame', this.iFrameOptions).within(() => {
+                        cy.get(selector).rightclick({ force: true })
+                    }),
+                () => {
+                    const elements = Cypress.$('#page-composer-frame')
+                        .contents()
+                        .find(`span[class *= "x-menu-item"]:contains("${action}"):not(:contains("${action} ")):visible`)
+                    if (elements.length > 0) {
+                        return true
+                    }
+                    return false
+                },
+            )
+        })
+        return new PageComposerContextualMenu('.editModeContextMenu')
+    }
 }
