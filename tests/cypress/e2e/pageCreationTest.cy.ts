@@ -1,17 +1,16 @@
 import { PageComposer } from '../page-object/pageComposer'
 import { getComponentByRole, Button, deleteNode, publishAndWaitJobEnding, createSite, deleteSite } from '@jahia/cypress'
-import { CustomPageComposer } from '../page-object/pageComposerOverride'
 
 const undelete = (pageTitle: string) => {
-    const customPageComposer = new CustomPageComposer()
-    const contextualMenu = customPageComposer.openContextualMenuOnLeftTree(pageTitle)
+    const pageComposer = new PageComposer()
+    const contextualMenu = pageComposer.openContextualMenuOnLeftTree(pageTitle)
     contextualMenu.undelete()
     cy.get('button[data-sel-role="delete-undelete-button"]').click()
 }
 
 const markForDeletion = (pageTitle: string) => {
-    const customPageComposer = new CustomPageComposer()
-    const contextualMenu = customPageComposer.openContextualMenuOnLeftTree(pageTitle)
+    const pageComposer = new PageComposer()
+    const contextualMenu = pageComposer.openContextualMenuOnLeftTree(pageTitle)
     contextualMenu.delete()
     return cy.get('button[data-sel-role="delete-mark-button"]').click()
 }

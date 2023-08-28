@@ -1,4 +1,3 @@
-import { CustomPageComposer } from '../page-object/pageComposerOverride'
 import {
     createSite,
     deleteSite,
@@ -11,6 +10,7 @@ import {
     removeVanityUrl,
     moveNode,
 } from '@jahia/cypress'
+import { PageComposer } from '../page-object/pageComposer'
 
 const checkDescriptions = (path: string) => {
     cy.waitUntil(
@@ -43,13 +43,13 @@ describe('Copy Cut and Paste tests with page composer', () => {
     })
 
     it('Copy and paste in another site', () => {
-        const composer = new CustomPageComposer()
+        const composer = new PageComposer()
         cy.login()
-        CustomPageComposer.visit('digitall', 'en', 'home.html')
+        PageComposer.visit('digitall', 'en', 'home.html')
         let contextMenu = composer.openContextualMenuOnLeftTree('About')
         contextMenu.copy()
         composer.openContextualMenuOnLeftTreeUntil('Newsroom', 'Paste')
-        CustomPageComposer.visit('testsite', 'en', 'home.html')
+        PageComposer.visit('testsite', 'en', 'home.html')
         contextMenu = composer.openContextualMenuOnLeftTreeUntil('Home', 'Paste')
         contextMenu.paste().then(() => {
             checkDescriptions('/sites/testsite/home/about')
@@ -59,9 +59,9 @@ describe('Copy Cut and Paste tests with page composer', () => {
     })
 
     it('Copy and paste under the same site, same parent', () => {
-        const composer = new CustomPageComposer()
+        const composer = new PageComposer()
         cy.login()
-        CustomPageComposer.visit('digitall', 'en', 'home.html')
+        PageComposer.visit('digitall', 'en', 'home.html')
         let contextMenu = composer.openContextualMenuOnLeftTree('About')
         contextMenu.copy()
         contextMenu = composer.openContextualMenuOnLeftTreeUntil('Home', 'Paste')
@@ -81,9 +81,9 @@ describe('Copy Cut and Paste tests with page composer', () => {
     })
 
     it('Copy and paste under the same site, other parent', () => {
-        const composer = new CustomPageComposer()
+        const composer = new PageComposer()
         cy.login()
-        CustomPageComposer.visit('digitall', 'en', 'home.html')
+        PageComposer.visit('digitall', 'en', 'home.html')
         let contextMenu = composer.openContextualMenuOnLeftTree('About')
         contextMenu.copy()
         contextMenu = composer.openContextualMenuOnLeftTreeUntil('Newsroom', 'Paste')
@@ -99,13 +99,13 @@ describe('Copy Cut and Paste tests with page composer', () => {
     })
 
     it("Cut and paste under another site / check vanity url isn't the same", () => {
-        const composer = new CustomPageComposer()
+        const composer = new PageComposer()
         cy.login()
-        CustomPageComposer.visit('digitall', 'en', 'home.html')
+        PageComposer.visit('digitall', 'en', 'home.html')
         let contextMenu = composer.openContextualMenuOnLeftTree('About')
         contextMenu.cut()
         composer.openContextualMenuOnLeftTreeUntil('Newsroom', 'Paste')
-        CustomPageComposer.visit('testsite', 'en', 'home.html')
+        PageComposer.visit('testsite', 'en', 'home.html')
         contextMenu = composer.openContextualMenuOnLeftTreeUntil('Home', 'Paste')
         contextMenu.paste().then(() => {
             cy.waitUntil(

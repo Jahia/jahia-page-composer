@@ -1,6 +1,9 @@
 import { BaseComponent, BasePage, Button, getComponent, getComponentByRole, getElement, MUIInput } from '@jahia/cypress'
 import IframeOptions = Cypress.IframeOptions
 import { ContentEditor } from './contentEditor'
+import { PageComposerContextualMenu } from './pageComposer/pageComposerContextualMenu'
+import 'cypress-wait-until'
+import { recurse } from 'cypress-recurse'
 
 export class PageComposer extends BasePage {
     iFrameOptions: IframeOptions
@@ -104,26 +107,26 @@ export class PageComposer extends BasePage {
         return new ContentEditor()
     }
 
-    createPage(title: string, systemName?: string, save?: boolean): ContentEditor {
+    createPage(title: string, systemName?: string, save = true, template = 'home'): ContentEditor {
         const ce = new ContentEditor()
         cy.iframe('#page-composer-frame', this.iFrameOptions).within(() => {
             cy.get('#JahiaGxtPagesTab').contains('Home').rightclick({ force: true })
             cy.get('.pagesContextMenuAnthracite').contains('New page').click({ force: true })
         })
 
-        cy.get('#jnt\\:page_jcr\\:title').click().type(title, { force: true })
+        cy.get('#jnt\\:page_jcr\\:title').type(title, { force: true })
 
         if (systemName) {
-            cy.get('#nt\\:base_ce\\:systemName').clear()
+            cy.get('#nt\\:base_ce\\:systemName').clear({ force: true })
             cy.get('#nt\\:base_ce\\:systemName').type(systemName, { force: true })
         }
 
         cy.get('#select-jmix\\:hasTemplateNode_j\\:templateName')
             .should('be.visible')
             .click()
-            .find('li[role="option"][data-value="home"]')
+            .find(`li[role="option"][data-value="${template}"]`)
             .click()
-        if (save === undefined || save) {
+        if (save) {
             ce.save()
         }
         return ce
@@ -135,6 +138,86 @@ export class PageComposer extends BasePage {
         })
 
         return new PageComposer()
+    }
+
+    openContextualMenuOnContent(selector: string | number | symbol) {
+        cy.iframe('#page-composer-frame', this.iFrameOptions).within(() => {
+            cy.waitUntil(
+                () => {
+                    cy.iframe('.gwt-Frame', this.iFrameOptions).within(() => {
+                        cy.get(selector).rightclick({ force: true })
+                    })
+                    return cy.get('.editModeContextMenu').then((element) => expect(element).to.be.not.null)
+                },
+                {
+                    errorMsg: 'Menu not opened in required time',
+                    timeout: 10000,
+                    interval: 1000,
+                },
+            )
+        })
+
+        return new PageComposerContextualMenu('.editModeContextMenu')
+    }
+
+    openContextualMenuOnLeftTree(entry: string) {
+        cy.log('Open contextual manu on ' + entry + ' entry')
+
+        cy.iframe('#page-composer-frame', this.iFrameOptions).within(() => {
+            cy.waitUntil(
+                () => {
+                    cy.get('#JahiaGxtPagesTab').contains(entry).rightclick({ force: true })
+                    return cy.get('.pagesContextMenuAnthracite').then((element) => expect(element).to.be.not.null)
+                },
+                {
+                    errorMsg: 'Menu not opened in required time',
+                    timeout: 10000,
+                    interval: 1000,
+                },
+            )
+        })
+        return new PageComposerContextualMenu('.pagesContextMenuAnthracite')
+    }
+
+    openContextualMenuOnLeftTreeUntil(entry: string, action: string) {
+        cy.log('Open contextual manu on ' + entry + ' entry')
+
+        cy.iframe('#page-composer-frame', this.iFrameOptions).within(() => {
+            recurse(
+                () => cy.get('#JahiaGxtPagesTab').contains(entry).rightclick({ force: true }),
+                () => {
+                    const elements = Cypress.$('#page-composer-frame')
+                        .contents()
+                        .find(`span[class *= "x-menu-item"]:contains("${action}"):not(:contains("${action} ")):visible`)
+                    if (elements.length > 0) {
+                        return true
+                    }
+                    return false
+                },
+            )
+        })
+        return new PageComposerContextualMenu('.pagesContextMenuAnthracite')
+    }
+
+    openContextualMenuOnContentUntil(selector: string | number | symbol, action: string) {
+        cy.iframe('#page-composer-frame', this.iFrameOptions).within(() => {
+            recurse(
+                () =>
+                    cy.iframe('.gwt-Frame', this.iFrameOptions).within(() => {
+                        cy.get(selector).rightclick({ force: true })
+                    }),
+                () => {
+                    const elements = Cypress.$('#page-composer-frame')
+                        .contents()
+                        .find(`span[class *= "x-menu-item"]:contains("${action}"):not(:contains("${action} ")):visible`)
+                    if (elements.length > 0) {
+                        return true
+                    }
+                    return false
+                },
+            )
+        })
+        return new PageComposerContextualMenu('.editModeContextMenu')
     }
 }
 

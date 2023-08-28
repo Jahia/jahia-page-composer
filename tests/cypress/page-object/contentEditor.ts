@@ -46,6 +46,14 @@ export class ContentEditor extends BasePage {
         cy.get('#createAnother').uncheck()
     }
 
+    setAsPageModel(pageModelName: string) {
+        this.openSection('Options')
+        cy.get('span[data-sel-role-dynamic-fieldset="jmix:canBeUseAsTemplateModel"]').click()
+        cy.get('div[data-sel-content-editor-field="jmix:canBeUseAsTemplateModel_j:pageTemplateTitle"]')
+            .find('input')
+            .type(pageModelName)
+    }
+
     activateWorkInProgressMode(language?: string) {
         if (language === undefined) {
             getComponentByRole(Button, '3dotsMenuAction').click()
