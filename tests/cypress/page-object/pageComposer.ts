@@ -104,7 +104,7 @@ export class PageComposer extends BasePage {
         return new ContentEditor()
     }
 
-    createPage(title: string, systemName?: string, save?: boolean, template?: string): ContentEditor {
+    createPage(title: string, systemName?: string, save: boolean = true, template: string = 'home'): ContentEditor {
         const ce = new ContentEditor()
         cy.iframe('#page-composer-frame', this.iFrameOptions).within(() => {
             cy.get('#JahiaGxtPagesTab').contains('Home').rightclick({ force: true })
@@ -118,18 +118,14 @@ export class PageComposer extends BasePage {
             cy.get('#nt\\:base_ce\\:systemName').type(systemName, { force: true })
         }
 
-        if (!template) {
-            template = 'home'
-        }
-
         cy.get('#select-jmix\\:hasTemplateNode_j\\:templateName')
             .should('be.visible')
             .click()
             .find(`li[role="option"][data-value="${template}"]`)
             .click()
-        if (save === undefined || save) {
-            ce.save()
-        }
+            if(save) {
+                ce.save()
+            }
         return ce
     }
 
