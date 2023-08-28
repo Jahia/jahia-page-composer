@@ -1,7 +1,6 @@
 import { createSite, createUser, deleteSite, deleteUser, grantRoles } from '@jahia/cypress'
 import { ContentEditor } from '../page-object/contentEditor'
 import { PageComposer } from '../page-object/pageComposer'
-import { CustomPageComposer } from '../page-object/pageComposerOverride'
 
 const siteKey = 'SystemNameReadOnlySite'
 const userName = 'SystemNameEditor'
@@ -36,8 +35,7 @@ describe('System name read only in areas testsuite', () => {
         PageComposer.visit(siteKey, 'en', 'home.html')
         pageComposer.createPage(firstPageName, firstPageSysName)
         checkAreaMain(firstPageName)
-        const customPageComposer = new CustomPageComposer()
-        let menu = customPageComposer.openContextualMenuOnLeftTree(firstPageName)
+        let menu = pageComposer.openContextualMenuOnLeftTree(firstPageName)
         menu.edit()
         const ce = new ContentEditor()
         ce.setAsPageModel(pageModelName)
@@ -46,11 +44,11 @@ describe('System name read only in areas testsuite', () => {
         pageComposer.createPage(secondPageName, secondPageSysName, true, `/sites/${siteKey}/home/${firstPageSysName}`)
         cy.reload()
         checkAreaMain(secondPageName)
-        menu = customPageComposer.openContextualMenuOnContentUntil('div[id="JahiaGxtArea__area-main"]', 'Copy')
+        menu = pageComposer.openContextualMenuOnContentUntil('div[id="JahiaGxtArea__area-main"]', 'Copy')
         menu.copy()
-        menu = customPageComposer.openContextualMenuOnContentUntil('div[id="JahiaGxtArea__landing"]', 'Paste')
+        menu = pageComposer.openContextualMenuOnContentUntil('div[id="JahiaGxtArea__landing"]', 'Paste')
         menu.paste()
-        menu = customPageComposer.openContextualMenuOnContentUntil(
+        menu = pageComposer.openContextualMenuOnContentUntil(
             'div[path="/sites/SystemNameReadOnlySite/home/myPageTest2/landing/area-main"]>div:contains("No item found")',
             'Edit',
         )
