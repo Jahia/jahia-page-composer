@@ -27,13 +27,13 @@ const expect404 = (url: string) => {
     })
 }
 
-const expect404InAllLanguages = () => {
-    expect404(`/en/sites/${siteKey}/home/pageen.html`)
-    expect404(`/fr/sites/${siteKey}/home/pageen.html`)
-    expect404(`/es/sites/${siteKey}/home/pageen.html`)
+const expect404InAllLanguages = (page: string) => {
+    expect404(`/en/sites/${siteKey}/home/${page}.html`)
+    expect404(`/fr/sites/${siteKey}/home/${page}.html`)
+    expect404(`/es/sites/${siteKey}/home/${page}.html`)
 }
 
-describe('Jahia user language 1 testsuite', () => {
+describe('Jahia user language 1 testsuite: A page should not be available when marked for deletion/deleted/unpublished', () => {
     before('Create sites/users', () => {
         createSite(siteKey, {
             languages: 'en,fr,es',
@@ -41,6 +41,7 @@ describe('Jahia user language 1 testsuite', () => {
             serverName: 'localhost',
             locale: 'en',
         })
+
         createUser(editorLogin, editorPassword)
         createUser(publisherLogin, publisherPassword)
         grantRoles(`/sites/${siteKey}`, ['editor'], editorLogin, 'USER')
@@ -48,32 +49,39 @@ describe('Jahia user language 1 testsuite', () => {
         publishAndWaitJobEnding(`/sites/${siteKey}`, ['en', 'fr', 'es'])
     })
 
-    it('Jahia user language 1 test', () => {
+    it('Jahia user language 1 test: A page should not be available when marked for deletion/deleted/unpublished', () => {
+
         cy.login(editorLogin, editorPassword)
         const pageComposer = new PageComposer()
         PageComposer.visit(siteKey, 'en', 'home.html')
         pageComposer.createPage('PageEN')
         PageComposer.visit(siteKey, 'fr', 'home.html')
         setNodeProperty(`/sites/${siteKey}/home`, 'jcr:title', 'Home', 'fr')
-        cy.reload()
         pageComposer.createPage('PageFR')
         publishAndWaitJobEnding(`/sites/${siteKey}/home/pagefr`, ['fr'])
         cy.logout()
+
         cy.visit(`/fr/sites/${siteKey}/home/pagefr.html`)
         expect404(`/en/sites/${siteKey}/home/pageen.html`)
+
         cy.login(publisherLogin, publisherPassword)
         unpublishNode(`/sites/${siteKey}/home/pagefr`, 'fr')
         cy.logout()
-        expect404InAllLanguages()
+
+        expect404InAllLanguages('pagefr')
+
         cy.login(editorLogin, editorPassword)
         startWorkflow(`/sites/${siteKey}/home/pagefr`, 'jBPM:2-step-publication', 'fr')
         cy.logout()
-        expect404InAllLanguages()
+
+        expect404InAllLanguages('pagefr')
+
         cy.login(publisherLogin, publisherPassword)
         abortAllWorkflows()
-        expect404InAllLanguages()
+        expect404InAllLanguages('pagefr')
         cy.logout()
-        expect404InAllLanguages()
+
+        expect404InAllLanguages('pagefr')
     })
 
     after('Delete site/users', () => {
