@@ -50,7 +50,6 @@ describe('Jahia user language 1 testsuite: A page should not be available when m
     })
 
     it('Jahia user language 1 test: A page should not be available when marked for deletion/deleted/unpublished', () => {
-
         cy.login(editorLogin, editorPassword)
         const pageComposer = new PageComposer()
         PageComposer.visit(siteKey, 'en', 'home.html')
