@@ -2,6 +2,7 @@ import {
     abortAllWorkflows,
     createSite,
     createUser,
+    deleteNode,
     deleteSite,
     deleteUser,
     grantRoles,
@@ -33,6 +34,40 @@ const expect404InAllLanguages = (page: string) => {
     expect404(`/es/sites/${siteKey}/home/${page}.html`)
 }
 
+const JahiaUserLanguageTest = (language: string) => {
+    cy.login(editorLogin, editorPassword)
+    const pageComposer = new PageComposer()
+    PageComposer.visit(siteKey, 'en', 'home.html')
+    pageComposer.createPage('PageEN')
+    PageComposer.visit(siteKey, language, 'home.html')
+    setNodeProperty(`/sites/${siteKey}/home`, 'jcr:title', 'Home', language)
+    pageComposer.createPage(`Page${language.toUpperCase()}`)
+    publishAndWaitJobEnding(`/sites/${siteKey}/home/page${language}`, [language])
+    cy.logout()
+
+    cy.visit(`/${language}/sites/${siteKey}/home/page${language}.html`)
+    expect404(`/en/sites/${siteKey}/home/pageen.html`)
+
+    cy.login(publisherLogin, publisherPassword)
+    unpublishNode(`/sites/${siteKey}/home/page${language}`, language)
+    cy.logout()
+
+    expect404InAllLanguages(`page${language}`)
+
+    cy.login(editorLogin, editorPassword)
+    startWorkflow(`/sites/${siteKey}/home/page${language}`, 'jBPM:2-step-publication', language)
+    cy.logout()
+
+    expect404InAllLanguages(`page${language}`)
+
+    cy.login(publisherLogin, publisherPassword)
+    abortAllWorkflows()
+    expect404InAllLanguages(`page${language}`)
+    cy.logout()
+
+    expect404InAllLanguages(`page${language}`)
+}
+
 describe('Jahia user language 1 testsuite: A page should not be available when marked for deletion/deleted/unpublished', () => {
     before('Create sites/users', () => {
         createSite(siteKey, {
@@ -50,37 +85,19 @@ describe('Jahia user language 1 testsuite: A page should not be available when m
     })
 
     it('Jahia user language 1 test: A page should not be available when marked for deletion/deleted/unpublished', () => {
-        cy.login(editorLogin, editorPassword)
-        const pageComposer = new PageComposer()
-        PageComposer.visit(siteKey, 'en', 'home.html')
-        pageComposer.createPage('PageEN')
-        PageComposer.visit(siteKey, 'fr', 'home.html')
-        setNodeProperty(`/sites/${siteKey}/home`, 'jcr:title', 'Home', 'fr')
-        pageComposer.createPage('PageFR')
-        publishAndWaitJobEnding(`/sites/${siteKey}/home/pagefr`, ['fr'])
-        cy.logout()
+        JahiaUserLanguageTest('fr')
+        deleteNode(`/sites/${siteKey}/home/pagefr`)
+        deleteNode(`/sites/${siteKey}/home/pageen`)
+        deleteNode(`/sites/${siteKey}/home/pagees`)
+        publishAndWaitJobEnding(`/sites/${siteKey}`, ['en', 'fr', 'es'])
+    })
 
-        cy.visit(`/fr/sites/${siteKey}/home/pagefr.html`)
-        expect404(`/en/sites/${siteKey}/home/pageen.html`)
-
-        cy.login(publisherLogin, publisherPassword)
-        unpublishNode(`/sites/${siteKey}/home/pagefr`, 'fr')
-        cy.logout()
-
-        expect404InAllLanguages('pagefr')
-
-        cy.login(editorLogin, editorPassword)
-        startWorkflow(`/sites/${siteKey}/home/pagefr`, 'jBPM:2-step-publication', 'fr')
-        cy.logout()
-
-        expect404InAllLanguages('pagefr')
-
-        cy.login(publisherLogin, publisherPassword)
-        abortAllWorkflows()
-        expect404InAllLanguages('pagefr')
-        cy.logout()
-
-        expect404InAllLanguages('pagefr')
+    it('Jahia user language 2 test: A page should not be available when marked for deletion/deleted/unpublished', () => {
+        JahiaUserLanguageTest('es')
+        deleteNode(`/sites/${siteKey}/home/pagefr`)
+        deleteNode(`/sites/${siteKey}/home/pageen`)
+        deleteNode(`/sites/${siteKey}/home/pagees`)
+        publishAndWaitJobEnding(`/sites/${siteKey}`, ['en', 'fr', 'es'])
     })
 
     after('Delete site/users', () => {
