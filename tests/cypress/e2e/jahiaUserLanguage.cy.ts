@@ -34,7 +34,7 @@ const expect404InAllLanguages = (page: string) => {
     expect404(`/es/sites/${siteKey}/home/${page}.html`)
 }
 
-const JahiaUserLanguageTest = (language: string) => {
+const jahiaUserLanguageTest = (language: string) => {
     cy.login(editorLogin, editorPassword)
     const pageComposer = new PageComposer()
     PageComposer.visit(siteKey, 'en', 'home.html')
@@ -68,7 +68,7 @@ const JahiaUserLanguageTest = (language: string) => {
     expect404InAllLanguages(`page${language}`)
 }
 
-describe('Jahia user language 1 testsuite: A page should not be available when marked for deletion/deleted/unpublished', () => {
+describe('A page should not be available when marked for deletion/deleted/unpublished', () => {
     before('Create sites/users', () => {
         createSite(siteKey, {
             languages: 'en,fr,es',
@@ -84,16 +84,16 @@ describe('Jahia user language 1 testsuite: A page should not be available when m
         publishAndWaitJobEnding(`/sites/${siteKey}`, ['en', 'fr', 'es'])
     })
 
-    it('Jahia user language 1 test: A page should not be available when marked for deletion/deleted/unpublished', () => {
-        JahiaUserLanguageTest('fr')
+    it('A page should not be available when marked for deletion/deleted/unpublished in french', () => {
+        jahiaUserLanguageTest('fr')
         deleteNode(`/sites/${siteKey}/home/pagefr`)
         deleteNode(`/sites/${siteKey}/home/pageen`)
         deleteNode(`/sites/${siteKey}/home/pagees`)
         publishAndWaitJobEnding(`/sites/${siteKey}`, ['en', 'fr', 'es'])
     })
 
-    it('Jahia user language 2 test: A page should not be available when marked for deletion/deleted/unpublished', () => {
-        JahiaUserLanguageTest('es')
+    it('A page should not be available when marked for deletion/deleted/unpublished in espagnol', () => {
+        jahiaUserLanguageTest('es')
         deleteNode(`/sites/${siteKey}/home/pagefr`)
         deleteNode(`/sites/${siteKey}/home/pageen`)
         deleteNode(`/sites/${siteKey}/home/pagees`)
