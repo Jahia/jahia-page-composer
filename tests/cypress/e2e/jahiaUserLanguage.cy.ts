@@ -92,7 +92,7 @@ describe('A page should not be available when marked for deletion/deleted/unpubl
         publishAndWaitJobEnding(`/sites/${siteKey}`, ['en', 'fr', 'es'])
     })
 
-    it('A page should not be available when marked for deletion/deleted/unpublished in espagnol', () => {
+    it('A page should not be available when marked for deletion/deleted/unpublished in spanish', () => {
         jahiaUserLanguageTest('es')
         deleteNode(`/sites/${siteKey}/home/pagefr`)
         deleteNode(`/sites/${siteKey}/home/pageen`)
