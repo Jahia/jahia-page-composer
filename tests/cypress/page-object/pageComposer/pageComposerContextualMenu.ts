@@ -1,4 +1,4 @@
-import { BasePage } from '@jahia/cypress'
+import {BasePage} from '@jahia/cypress';
 import IframeOptions = Cypress.IframeOptions
 
 export enum ExportType {
@@ -7,42 +7,42 @@ export enum ExportType {
     ZIP_LIVE = 'Export Zip with live content',
 }
 export class PageComposerContextualMenu extends BasePage {
-    iFrameOptions: IframeOptions
-    contextMenuId: string
+    iFrameOptions: IframeOptions;
+    contextMenuId: string;
 
     constructor(contextMenuId: string) {
-        super()
-        this.contextMenuId = contextMenuId
+        super();
+        this.contextMenuId = contextMenuId;
     }
 
     copy(): Cypress.Chainable {
-        return this.execute('Copy')
+        return this.execute('Copy');
     }
 
     cut(): Cypress.Chainable {
-        return this.execute('Cut')
+        return this.execute('Cut');
     }
 
     paste(): Cypress.Chainable {
-        return this.execute('Paste')
+        return this.execute('Paste');
     }
 
     delete() {
-        return this.execute(`Delete`)
+        return this.execute('Delete');
     }
 
     undelete() {
-        return this.execute(`Undelete`)
+        return this.execute('Undelete');
     }
 
     edit() {
-        return this.execute('Edit')
+        return this.execute('Edit');
     }
 
     execute(action: string): Cypress.Chainable {
-        cy.log('Execute action: ' + action)
+        cy.log('Execute action: ' + action);
         return cy.iframe('#page-composer-frame', this.iFrameOptions).within(() => {
-            cy.get(this.contextMenuId).contains(action).click({ force: true })
-        })
+            cy.get(this.contextMenuId).contains(action).click({force: true});
+        });
     }
 }

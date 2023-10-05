@@ -101,13 +101,17 @@
   resolved "https://registry.yarnpkg.com/@humanwhocodes/object-schema/-/object-schema-1.2.1.tgz#b520529ec21d8e5945a1851dfd1c32e94e39ff45"
   integrity sha512-ZnQMnLV4e7hDlUvw8H+U8ASL02SS2Gn6+9Ac3wGGLIe7+je2AeAOxPY+izIPJDfFDb7eDjev0Us8MO1iFRN8hA==
 
-"@jahia/cypress@^1.1.4":
-  version "1.1.4"
-  resolved "https://npm.jahia.com/@jahia%2fcypress/-/cypress-1.1.4.tgz#68ea119ebf91b2597e7977e9881e53e283ea1d31"
-  integrity sha512-kYQeAZUS5FpYw4fPsKOSJfEoWyv22QThDxbjWlFXU3H0e4sTWdDBILYVfB7uueEwcDwECRFO7DtyrDpCuNA4jw==
+"@jahia/content-editor-cypress@^4.2.0-tests.9":
+  version "4.2.0-tests.9"
+  resolved "https://registry.yarnpkg.com/@jahia/content-editor-cypress/-/content-editor-cypress-4.2.0-tests.9.tgz#1d899ce2a78638e7847eccf5c13c242681be1eb7"
+  integrity sha512-aJN0Z62EPs82AbiCU9wqEgmzxrZdu3nWm06GpTvMh05FYdv6DeF86bml2IldehGBn8NJCIIy26vA88GL6OJQKw==
+
+"@jahia/cypress@^3.6.0":
+  version "3.17.2"
+  resolved "https://registry.yarnpkg.com/@jahia/cypress/-/cypress-3.17.2.tgz#63663b4b4cf53d6cc7f4edff768201aa63c79ecc"
+  integrity sha512-F7nFVQuA3JfTUzemECT7f/WMC7PAqrrDrKAxy0F2zJGEpBJCH2qBBZq127MkSgH7FyJyzQgRdqyzyAdTz1Bmsw==
   dependencies:
     "@apollo/client" "^3.4.9"
-    cypress-terminal-report "^3.4.2"
     graphql "^15.5.0"
     graphql-tag "^2.11.0"
 
@@ -1009,7 +1013,14 @@ cypress-multi-reporters@^1.6.0:
     debug "^4.1.1"
     lodash "^4.17.15"
 
-cypress-terminal-report@^3.4.2, cypress-terminal-report@^3.5.2:
+cypress-recurse@^1.31.2:
+  version "1.35.2"
+  resolved "https://registry.yarnpkg.com/cypress-recurse/-/cypress-recurse-1.35.2.tgz#3f49db173beb117196cad82c5484e638e2dc3478"
+  integrity sha512-G6HfxP90xa7phw8oeOX4uabxcI9gE1ktkKHShcA3nCByrkMLs56+GIJVn0A+ws1tI0PGRKBz6+V9DHS5WnZX4A==
+  dependencies:
+    humanize-duration "^3.27.3"
+
+cypress-terminal-report@^3.5.2:
   version "3.5.2"
   resolved "https://registry.yarnpkg.com/cypress-terminal-report/-/cypress-terminal-report-3.5.2.tgz#fa4fbc6eca78d4f3db0a3dfc441fd1b98dcc110f"
   integrity sha512-06y4xTOnztyUOIwk3B+YoAYrK5DSwgCMZhUieUdU3EDXjIb4BgRs/wqPYbfCrH/N5/Yb9aV2hjO95pjzEClwqQ==
@@ -1019,6 +1030,11 @@ cypress-terminal-report@^3.4.2, cypress-terminal-report@^3.5.2:
     methods "^1.1.2"
     semver "^7.3.5"
     tv4 "^1.3.0"
+
+cypress-wait-until@^1.7.2:
+  version "1.7.2"
+  resolved "https://registry.yarnpkg.com/cypress-wait-until/-/cypress-wait-until-1.7.2.tgz#7f534dd5a11c89b65359e7a0210f20d3dfc22107"
+  integrity sha512-uZ+M8/MqRcpf+FII/UZrU7g1qYZ4aVlHcgyVopnladyoBrpoaMJ4PKZDrdOJ05H5RHbr7s9Tid635X3E+ZLU/Q==
 
 cypress@10.6.0:
   version "10.6.0"
@@ -1104,13 +1120,6 @@ debug@4, debug@^4.1.1, debug@^4.3.2, debug@^4.3.4:
   integrity sha512-PRWFHuSU3eDtQJPvnNY7Jcket1j0t5OuOsFzPPzsekD52Zl8qUfFIPEiswXqIvHWGVHOgX+7G/vCNNhehwxfkQ==
   dependencies:
     ms "2.1.2"
-
-debug@^2.2.0:
-  version "2.6.9"
-  resolved "https://registry.yarnpkg.com/debug/-/debug-2.6.9.tgz#5d128515df134ff327e90a4c93f4e077a536341f"
-  integrity sha512-bC7ElrdJaJnPbAP+1EotYvqZsb3ecl5wi6Bfi6BJTUcNowp6cvspg0jXznRTKDjm/E7AdgFBVeAPVMNcKGsHMA==
-  dependencies:
-    ms "2.0.0"
 
 debug@^3.1.0:
   version "3.2.7"
@@ -1222,12 +1231,17 @@ eslint-config-prettier@^8.5.0:
   resolved "https://registry.yarnpkg.com/eslint-config-prettier/-/eslint-config-prettier-8.5.0.tgz#5a81680ec934beca02c7b1a61cf8ca34b66feab1"
   integrity sha512-obmWKLUNCnhtQRKc+tmnYuQl0pFU1ibYJQ5BGhTVB08bHe9wC8qUeG7c08dj9XX+AuPj1YSGSQIHl1pnDHZR0Q==
 
-eslint-plugin-cypress@^2.12.1:
-  version "2.12.1"
-  resolved "https://registry.yarnpkg.com/eslint-plugin-cypress/-/eslint-plugin-cypress-2.12.1.tgz#9aeee700708ca8c058e00cdafe215199918c2632"
-  integrity sha512-c2W/uPADl5kospNDihgiLc7n87t5XhUbFDoTl6CfVkmG+kDAb5Ux10V9PoLPu9N+r7znpc+iQlcmAqT1A/89HA==
+eslint-plugin-chai-friendly@^0.7.2:
+  version "0.7.2"
+  resolved "https://registry.yarnpkg.com/eslint-plugin-chai-friendly/-/eslint-plugin-chai-friendly-0.7.2.tgz#0ebfbb2c1244f5de2997f3963d155758234f2b0f"
+  integrity sha512-LOIfGx5sZZ5FwM1shr2GlYAWV9Omdi+1/3byuVagvQNoGUuU0iHhp7AfjA1uR+4dJ4Isfb4+FwBJgQajIw9iAg==
+
+eslint-plugin-cypress@^2.15.1:
+  version "2.15.1"
+  resolved "https://registry.yarnpkg.com/eslint-plugin-cypress/-/eslint-plugin-cypress-2.15.1.tgz#336afa7e8e27451afaf65aa359c9509e0a4f3a7b"
+  integrity sha512-eLHLWP5Q+I4j2AWepYq0PgFEei9/s5LvjuSqWrxurkg1YZ8ltxdvMNmdSf0drnsNo57CTgYY/NIHHLRSWejR7w==
   dependencies:
-    globals "^11.12.0"
+    globals "^13.20.0"
 
 eslint-plugin-prettier@^4.0.0:
   version "4.2.1"
@@ -1733,15 +1747,17 @@ global@^4.4.0:
     min-document "^2.19.0"
     process "^0.11.10"
 
-globals@^11.12.0:
-  version "11.12.0"
-  resolved "https://registry.yarnpkg.com/globals/-/globals-11.12.0.tgz#ab8795338868a0babd8525758018c2a7eb95c42e"
-  integrity sha512-WOBp/EEGUiIsJSp7wcv/y6MO+lV9UoncWqxuFfm8eBwzWNgyfBd6Gz+IeKQ9jCmyhoH99g15M3T+QaVHFjizVA==
-
 globals@^13.15.0:
   version "13.17.0"
   resolved "https://registry.yarnpkg.com/globals/-/globals-13.17.0.tgz#902eb1e680a41da93945adbdcb5a9f361ba69bd4"
   integrity sha512-1C+6nQRb1GwGMKm2dH/E7enFAMxGTmGI7/dEdhy/DNelv85w9B72t3uc5frtMNXIbzrarJJ/lTCjcaZwbLJmyw==
+  dependencies:
+    type-fest "^0.20.2"
+
+globals@^13.20.0:
+  version "13.22.0"
+  resolved "https://registry.yarnpkg.com/globals/-/globals-13.22.0.tgz#0c9fcb9c48a2494fbb5edbfee644285543eba9d8"
+  integrity sha512-H1Ddc/PbZHTDVJSnj8kWptIRSD6AM3pK+mKytuIVF4uoBV7rshFlhhvA58ceJ5wp3Er58w6zj7bykMpYXt3ETw==
   dependencies:
     type-fest "^0.20.2"
 
@@ -1881,6 +1897,11 @@ human-signals@^1.1.1:
   version "1.1.1"
   resolved "https://registry.yarnpkg.com/human-signals/-/human-signals-1.1.1.tgz#c5b1cd14f50aeae09ab6c59fe63ba3395fe4dfa3"
   integrity sha512-SEQu7vl8KjNL2eoGBLF3+wAjpsNfA9XMlXAYj/3EdaNfAlxKthD1xjEQfGOUhllCGGJVNY34bRr6lPINhNjyZw==
+
+humanize-duration@^3.27.3:
+  version "3.30.0"
+  resolved "https://registry.yarnpkg.com/humanize-duration/-/humanize-duration-3.30.0.tgz#9be623d331116583ff90aeb6ccfdc2e79d6d7372"
+  integrity sha512-NxpT0fhQTFuMTLnuu1Xp+ozNpYirQnbV3NlOjEKBYlE3uvMRu3LDuq8EPc3gVXxVYnchQfqVM4/+T9iwHPLLeA==
 
 hyperlinker@^1.0.0:
   version "1.0.0"
@@ -2260,7 +2281,7 @@ make-error@^1.1.1:
   resolved "https://registry.yarnpkg.com/make-error/-/make-error-1.3.6.tgz#2eb2e37ea9b67c4891f684a1394799af484cf7a2"
   integrity sha512-s8UhlNe7vPKomQhC1qFelMokr/Sc3AgNbso3n74mVPA5LTZwkB9NlXf4XPamLxJE8h0gh73rM94xvwRT2CVInw==
 
-md5@^2.1.0, md5@^2.3.0:
+md5@^2.3.0:
   version "2.3.0"
   resolved "https://registry.yarnpkg.com/md5/-/md5-2.3.0.tgz#c3da9a6aae3a30b46b7b0c349b87b110dc3bda4f"
   integrity sha512-T1GITYmFaKuO91vxyoQMFETst+O71VUPEU3ze5GNzDm0OWdP8v1ziTaAEPUr/3kLsY3Sftgz242A1SetQiDL7g==
@@ -2328,23 +2349,21 @@ minimist@^1.2.6:
   resolved "https://registry.yarnpkg.com/minimist/-/minimist-1.2.6.tgz#8637a5b759ea0d6e98702cfb3a9283323c93af44"
   integrity sha512-Jsjnk4bw3YJqYzbdyBiNsPWHPfO++UGG749Cxs6peCu5Xg4nrena6OVxOYxrQTqww0Jmwt+Ref8rggumkTLz9Q==
 
-mkdirp@~0.5.1:
-  version "0.5.6"
-  resolved "https://registry.yarnpkg.com/mkdirp/-/mkdirp-0.5.6.tgz#7def03d2432dcae4ba1d611445c48396062255f6"
-  integrity sha512-FP+p8RB8OWpF3YZBCrP5gtADmtXApB5AMLn+vdyA+PyxCjrCs00mjyUozssO33cwDeT3wNGdLxJ5M//YqtHAJw==
-  dependencies:
-    minimist "^1.2.6"
+mkdirp@^3.0.0:
+  version "3.0.1"
+  resolved "https://registry.yarnpkg.com/mkdirp/-/mkdirp-3.0.1.tgz#e44e4c5607fb279c168241713cc6e0fea9adcb50"
+  integrity sha512-+NsyUUAZDmo6YVHzL/stxSu3t9YS1iljliy3BSDrXJ/dkn1KYdmtZODGGjLcc9XLgVVpH4KshHB8XmZgMhaBXg==
 
-mocha-junit-reporter@^2.0.2:
-  version "2.0.2"
-  resolved "https://registry.yarnpkg.com/mocha-junit-reporter/-/mocha-junit-reporter-2.0.2.tgz#d521689b651dc52f52044739f8ffb368be415731"
-  integrity sha512-vYwWq5hh3v1lG0gdQCBxwNipBfvDiAM1PHroQRNp96+2l72e9wEUTw+mzoK+O0SudgfQ7WvTQZ9Nh3qkAYAjfg==
+mocha-junit-reporter@^2.2.0:
+  version "2.2.1"
+  resolved "https://registry.yarnpkg.com/mocha-junit-reporter/-/mocha-junit-reporter-2.2.1.tgz#739f5595d0f051d07af9d74e32c416e13a41cde5"
+  integrity sha512-iDn2tlKHn8Vh8o4nCzcUVW4q7iXp7cC4EB78N0cDHIobLymyHNwe0XG8HEHHjc3hJlXm0Vy6zcrxaIhnI2fWmw==
   dependencies:
-    debug "^2.2.0"
-    md5 "^2.1.0"
-    mkdirp "~0.5.1"
+    debug "^4.3.4"
+    md5 "^2.3.0"
+    mkdirp "^3.0.0"
     strip-ansi "^6.0.1"
-    xml "^1.0.0"
+    xml "^1.0.1"
 
 mochawesome-merge@^4.2.1:
   version "4.2.1"
@@ -2388,11 +2407,6 @@ mochawesome@^7.1.3:
     mochawesome-report-generator "^6.2.0"
     strip-ansi "^6.0.1"
     uuid "^8.3.2"
-
-ms@2.0.0:
-  version "2.0.0"
-  resolved "https://registry.yarnpkg.com/ms/-/ms-2.0.0.tgz#5608aeadfc00be6c2901df5f9861788de0d597c8"
-  integrity sha512-Tpp60P6IUJDTuOq/5Z8cdskzJujfwqfOTkrwIwj7IRISpnkJnT6SyJ4PCPnGMoFjC9ddhal5KVIYtAt97ix05A==
 
 ms@2.1.2:
   version "2.1.2"
@@ -3320,7 +3334,7 @@ xml-js@^1.6.11:
   dependencies:
     sax "^1.2.4"
 
-xml@^1.0.0:
+xml@^1.0.1:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/xml/-/xml-1.0.1.tgz#78ba72020029c5bc87b8a81a3cfcd74b4a2fc1e5"
   integrity sha512-huCv9IH9Tcf95zuYCsQraZtWnJvBtLVE0QHMOs8bWyZAFZNDcYjsPq1nEx8jKA9y+Beo9v+7OBPRisQTjinQMw==
