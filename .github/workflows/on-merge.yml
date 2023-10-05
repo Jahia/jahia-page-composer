@@ -38,13 +38,13 @@ jobs:
           nexus_username: ${{ secrets.NEXUS_USERNAME }}
           nexus_password: ${{ secrets.NEXUS_PASSWORD }}
           module_id: jahia-page-composer
-          
+
   sbom:
     name: SBOM processing
     needs: build
     runs-on: ubuntu-latest
     container:
-      image: cyclonedx/cyclonedx-cli:0.24.2   
+      image: cyclonedx/cyclonedx-cli:0.24.2
     steps:
       - uses: jahia/jahia-modules-action/sbom-processing@v2
         with:
@@ -71,7 +71,7 @@ jobs:
           module_id: jahia-page-composer
           testrail_project: Page Composer Module
           tests_manifest: provisioning-manifest-build.yml
-          jahia_image: jahia/jahia-ee-dev:8-SNAPSHOT
+          jahia_image: jahia/jahia-discovery-dev:8-SNAPSHOT
           should_use_build_artifacts: true
           github_artifact_name: jahia-page-composer-standalone-artifacts-${{ github.run_number }}
           bastion_ssh_private_key: ${{ secrets.BASTION_SSH_PRIVATE_KEY_JAHIACI }}
