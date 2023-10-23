@@ -33,6 +33,12 @@ export class ContentEditor extends BasePage {
         getComponentByRole(Button, 'backButton').click()
     }
 
+    editField(fieldId: string, newValue: string) {
+        const selector = `[id="${fieldId}"]`;
+        cy.get(selector).clear({force: true});
+        cy.get(selector).type(newValue, {force: true});
+    }
+
     cancelAndDiscard() {
         getComponentByRole(Button, 'backButton').click()
         getComponentByRole(Button, 'close-dialog-discard').click()
