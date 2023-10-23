@@ -1,5 +1,5 @@
 import { addNode, createSite, createUser, deleteNode, deleteSite, deleteUser, getNodeByPath, grantRoles, Menu } from "@jahia/cypress"
-import { ContentEditor } from "../page-object/contentEditor"
+import {ContentEditor} from '@jahia/content-editor-cypress/dist/page-object/contentEditor';
 import { PageComposer } from "../page-object/pageComposer"
 
 const siteKey = 'advancedPageSite'
@@ -47,6 +47,12 @@ const createExternalLink = () => {
 
 describe('Advanced page testsuite', () => {
     before('Create site', () => {
+        cy.login();
+        deleteSite(siteKey);
+        deleteUser(userName);
+        deleteUser(adminName);
+        cy.logout();
+
         cy.login();
         createSite(siteKey);
         createUser(userName, 'password');
@@ -154,7 +160,7 @@ describe('Advanced page testsuite', () => {
         cy.get('[data-sel-role="read-only-badge"]').should('not.exist');
         cy.get('[data-sel-role="lock-info-badge"]').should('not.exist');
         const ce = new ContentEditor;
-        ce.editField('jnt:page_jcr:title', 'test');
+        cy.get('[id="jnt:page_jcr:title"]').clear({force: true}).type('test', {force: true});
         ce.cancel();
 
         PageComposer.visit(siteKey, 'en', 'home.html');
@@ -162,7 +168,7 @@ describe('Advanced page testsuite', () => {
         menu.edit();
         cy.get('[data-sel-role="read-only-badge"]').should('not.exist');
         cy.get('[data-sel-role="lock-info-badge"]').should('not.exist');
-        ce.editField('jnt:nodeLink_jcr:title', 'test');
+        cy.get('[id="jnt:nodeLink_jcr:title"]').clear({force: true}).type('test', {force: true});
         ce.cancel();
     })
 
@@ -175,10 +181,6 @@ describe('Advanced page testsuite', () => {
 
 
     after('Delete site and users', () => {
-        cy.login();
-        deleteSite(siteKey);
-        deleteUser(userName);
-        deleteUser(adminName);
-        cy.logout();
+        
     })
 })
