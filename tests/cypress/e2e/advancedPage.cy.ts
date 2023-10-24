@@ -127,6 +127,7 @@ describe('Advanced page testsuite', () => {
                 properties: [{name: 'jcr:title', value: 'internalHome', language: 'en'}, {name: 'j:node', value: home.data.jcr.nodeByPath.uuid}]
             });
         });
+        cy.login();
         const pc = createMenuAndSubPage();
         cy.login();
         PageComposer.visit(siteKey, 'en', 'home.html');
