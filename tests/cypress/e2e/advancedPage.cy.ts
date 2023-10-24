@@ -1,26 +1,24 @@
-import { addNode, createSite, createUser, deleteNode, deleteSite, deleteUser, getNodeByPath, grantRoles, Menu } from "@jahia/cypress"
+import {addNode, createSite, createUser, deleteNode, deleteSite, deleteUser, getNodeByPath, grantRoles} from '@jahia/cypress';
 import {ContentEditor} from '@jahia/content-editor-cypress/dist/page-object/contentEditor';
-import { PageComposer } from "../page-object/pageComposer"
+import {PageComposer} from '../page-object/pageComposer';
 
-const siteKey = 'advancedPageSite'
-const userName = 'advanceduser'
-const adminName = 'advancedadmin'
-const page1Name = 'New page 1';
-const page2Name = 'New page 2';
+const siteKey = 'advancedPageSite';
+const userName = 'advanceduser';
+const adminName = 'advancedadmin';
 const menuName = 'Menu title';
 const subPageName = 'My sub page';
 const externalLinkName = 'Jahia.com';
 const internalLinkName = 'internalHome';
 
 const pageIsLocked = (page: string, unlocked = false) => {
-    cy.iframe("#page-composer-frame", {timeout: 90000}).within(() => {
-        if(!unlocked) {
-            cy.get(`#JahiaGxtPagesTab tr:contains("${page}") div[class*="x-grid3-col-locked"] img`).should('exist');
-        } else {
+    cy.iframe('#page-composer-frame', {timeout: 90000}).within(() => {
+        if (unlocked) {
             cy.get(`#JahiaGxtPagesTab tr:contains("${page}") div[class*="x-grid3-col-locked"] img`).should('not.exist');
+        } else {
+            cy.get(`#JahiaGxtPagesTab tr:contains("${page}") div[class*="x-grid3-col-locked"] img`).should('exist');
         }
-    })
-}
+    });
+};
 
 const createMenuAndSubPage = () => {
     addNode({
@@ -34,8 +32,7 @@ const createMenuAndSubPage = () => {
     const pc = PageComposer.visit(siteKey, 'en', 'home.html');
     pc.createPage(subPageName, undefined, undefined, undefined, menuName);
     return pc;
-}
-
+};
 
 const createExternalLink = () => {
     addNode({
@@ -44,7 +41,7 @@ const createExternalLink = () => {
         name: 'jahia-com',
         properties: [{name: 'jcr:title', value: externalLinkName, language: 'en'}, {name: 'j:url', value: 'http://www.jahia.com'}]
     });
-}
+};
 
 describe('Advanced page testsuite', () => {
     before('Create site', () => {
@@ -55,12 +52,12 @@ describe('Advanced page testsuite', () => {
         grantRoles(`/sites/${siteKey}`, ['editor-in-chief'], userName, 'USER');
         grantRoles(`/sites/${siteKey}`, ['site-administrator'], adminName, 'USER');
         cy.logout();
-    })
+    });
 
     beforeEach('Visit and login', () => {
         cy.visit('/');
         cy.login(userName, 'password');
-    })
+    });
 
     it('External link test', () => {
         PageComposer.visit(siteKey, 'en', 'home.html');
@@ -72,7 +69,7 @@ describe('Advanced page testsuite', () => {
         cy.url().should('include', 'www.jahia.com');
 
         deleteNode(`/sites/${siteKey}/home/jahia-com`);
-    })
+    });
 
     it('Menu title test', () => {
         createMenuAndSubPage();
@@ -84,7 +81,7 @@ describe('Advanced page testsuite', () => {
         cy.url().should('include', 'home/menu-title/my-sub-page.html');
 
         deleteNode(`/sites/${siteKey}/home/menu-title`);
-    })
+    });
 
     it('Basic Lock/Unlock', () => {
         const pc = createMenuAndSubPage();
@@ -101,7 +98,7 @@ describe('Advanced page testsuite', () => {
         pageIsLocked(subPageName);
         menu = pc.openContextualMenuOnLeftTree(subPageName);
 
-        const ce = new ContentEditor;
+        const ce = new ContentEditor();
         menu.edit();
         cy.get('[data-sel-role="read-only-badge"]').should('be.visible');
         cy.get('[data-sel-role="lock-info-badge"]').contains(userName).should('be.visible');
@@ -118,7 +115,7 @@ describe('Advanced page testsuite', () => {
         pc.leftTreeRefresh();
         pageIsLocked(subPageName, true);
         deleteNode(`/sites/${siteKey}/home/menu-title`);
-    })
+    });
 
     it('Lock/Clear lock', () => {
         createExternalLink();
@@ -128,8 +125,8 @@ describe('Advanced page testsuite', () => {
                 primaryNodeType: 'jnt:nodeLink',
                 name: 'internal-home',
                 properties: [{name: 'jcr:title', value: 'internalHome', language: 'en'}, {name: 'j:node', value: home.data.jcr.nodeByPath.uuid}]
-            })
-        })
+            });
+        });
         const pc = createMenuAndSubPage();
         cy.login();
         PageComposer.visit(siteKey, 'en', 'home.html');
@@ -155,8 +152,9 @@ describe('Advanced page testsuite', () => {
         menu.edit();
         cy.get('[data-sel-role="read-only-badge"]').should('not.exist');
         cy.get('[data-sel-role="lock-info-badge"]').should('not.exist');
-        const ce = new ContentEditor;
-        cy.get('[id="jnt:page_jcr:title"]').clear({force: true}).type('test', {force: true});
+        const ce = new ContentEditor();
+        cy.get('[id="jnt:page_jcr:title"]').clear({force: true});
+        cy.get('[id="jnt:page_jcr:title"]').type('test', {force: true});
         ce.cancel();
 
         PageComposer.visit(siteKey, 'en', 'home.html');
@@ -164,17 +162,14 @@ describe('Advanced page testsuite', () => {
         menu.edit();
         cy.get('[data-sel-role="read-only-badge"]').should('not.exist');
         cy.get('[data-sel-role="lock-info-badge"]').should('not.exist');
-        cy.get('[id="jnt:nodeLink_jcr:title"]').clear({force: true}).type('test', {force: true});
+        cy.get('[id="jnt:nodeLink_jcr:title"]').clear({force: true});
+        cy.get('[id="jnt:nodeLink_jcr:title"]').type('test', {force: true});
         ce.cancel();
-    })
+    });
 
     afterEach('logout', () => {
         cy.logout();
-    })
-
-
-
-
+    });
 
     after('Delete site and users', () => {
         cy.login();
@@ -182,5 +177,5 @@ describe('Advanced page testsuite', () => {
         deleteUser(userName);
         deleteUser(adminName);
         cy.logout();
-    })
-})
+    });
+});

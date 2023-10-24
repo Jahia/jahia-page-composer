@@ -19,8 +19,8 @@ export class PageComposer extends BasePage {
     }
 
     static previewVisit(site: string, language: string, path: string): PageComposer {
-        cy.visit(`/cms/render/default/${language}/sites/${site}/${path}`)
-        return new PageComposer;
+        cy.visit(`/cms/render/default/${language}/sites/${site}/${path}`);
+        return new PageComposer();
     }
 
     openCreateContent(): PageComposer {
@@ -117,11 +117,11 @@ export class PageComposer extends BasePage {
     }
 
     createPage(title: string, systemName?: string, save = true, template = 'home', under = 'Home'): ContentEditor {
-        const ce = new ContentEditor()
+        const ce = new ContentEditor();
         cy.iframe('#page-composer-frame', this.iFrameOptions).within(() => {
-            cy.get('#JahiaGxtPagesTab').contains(under).rightclick({ force: true })
-            cy.get('.pagesContextMenuAnthracite').contains('New page').click({ force: true })
-        })
+            cy.get('#JahiaGxtPagesTab').contains(under).rightclick({ force: true });
+            cy.get('.pagesContextMenuAnthracite').contains('New page').click({force: true});
+        });
 
         cy.get('#jnt\\:page_jcr\\:title').type(title, {force: true});
 
@@ -173,17 +173,17 @@ export class PageComposer extends BasePage {
         cy.iframe('#page-composer-frame', this.iFrameOptions).should('be.visible').within(() => {
             cy.waitUntil(
                 () => {
-                    cy.get('#JahiaGxtPagesTab').contains(entry).rightclick({force: true, waitForAnimations: true})
-                    return cy.get('.pagesContextMenuAnthracite', {timeout: 10000}).should('be.visible').then((element) => expect(element).to.be.not.null)
+                    cy.get('#JahiaGxtPagesTab').contains(entry).rightclick({force: true, waitForAnimations: true});
+                    return cy.get('.pagesContextMenuAnthracite', {timeout: 10000}).should('be.visible').then(element => expect(element).to.be.not.null);
                 },
                 {
                     errorMsg: 'Menu not opened in required time',
                     timeout: 90000,
-                    interval: 1000,
-                },
-            )
-        })
-        return new PageComposerContextualMenu('.pagesContextMenuAnthracite')
+                    interval: 1000
+                }
+            );
+        });
+        return new PageComposerContextualMenu('.pagesContextMenuAnthracite');
     }
 
     openContextualMenuOnLeftTreeUntil(entry: string, action: string) {
@@ -199,14 +199,15 @@ export class PageComposer extends BasePage {
                     if (elements.length > 0) {
                         return true;
                     }
-                    return false
+                    
+                    return false;
                 },
                 {
                     timeout: 90000
                 }
-            )
-        })
-        return new PageComposerContextualMenu('.pagesContextMenuAnthracite')
+            );
+        });
+        return new PageComposerContextualMenu('.pagesContextMenuAnthracite');
     }
 
     openContextualMenuOnContentUntil(selector: string | number | symbol, action: string) {
@@ -223,20 +224,21 @@ export class PageComposer extends BasePage {
                     if (elements.length > 0) {
                         return true;
                     }
-                    return false
+
+                    return false;
                 },
                 {
                     timeout: 90000
                 }
-            )
-        })
-        return new PageComposerContextualMenu('.editModeContextMenu')
+            );
+        });
+        return new PageComposerContextualMenu('.editModeContextMenu');
     }
 
     leftTreeRefresh() {
         cy.iframe('#page-composer-frame', this.iFrameOptions).within(() => {
             cy.get('#JahiaGxtRefreshSidePanelButton').click();
-        })
+        });
     }
 }
 

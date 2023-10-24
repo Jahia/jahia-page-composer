@@ -48,9 +48,10 @@ export class PageComposerContextualMenu extends BasePage {
     }
 
     clearLock(childs?: boolean) {
-        if(childs) {
-            return this.execute('Clear lock on node and children')
+        if (childs) {
+            return this.execute('Clear lock on node and children');
         }
+        
         return this.execute('Clear lock on node');
     }
 
@@ -65,13 +66,13 @@ export class PageComposerContextualMenu extends BasePage {
         cy.log(`Action ${action} shouldn't be dispalyed`);
         cy.iframe('#page-composer-frame', this.iFrameOptions).within(() => {
             cy.get(this.contextMenuId).contains(action).should('not.be.visible');
-        })
+        });
     }
 
     actionShouldBeDisplayed(action: string) {
         cy.log(`Action ${action} should be dispalyed`);
         cy.iframe('#page-composer-frame', this.iFrameOptions).within(() => {
             cy.get(this.contextMenuId, {timeout: 90000}).contains(action).should('be.visible');
-        })
+        });
     }
 }
