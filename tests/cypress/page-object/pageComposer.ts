@@ -116,7 +116,7 @@ export class PageComposer extends BasePage {
         return new ContentEditor();
     }
 
-    createPage(title: string, {systemName , save = true, template = 'home', under = 'Home'}: {systemName?: string, save?: boolean, template?: string, under?: string}): ContentEditor {
+    createPage(title: string, {systemName, save = true, template = 'home', under = 'Home'}: {systemName?: string, save?: boolean, template?: string, under?: string}): ContentEditor {
         const ce = new ContentEditor();
         cy.iframe('#page-composer-frame', this.iFrameOptions).within(() => {
             cy.get('#JahiaGxtPagesTab').contains(under).rightclick({force: true});
