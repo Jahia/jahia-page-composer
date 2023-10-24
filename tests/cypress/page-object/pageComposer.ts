@@ -119,7 +119,7 @@ export class PageComposer extends BasePage {
     createPage(title: string, systemName?: string, save = true, template = 'home', under = 'Home'): ContentEditor {
         const ce = new ContentEditor();
         cy.iframe('#page-composer-frame', this.iFrameOptions).within(() => {
-            cy.get('#JahiaGxtPagesTab').contains(under).rightclick({ force: true });
+            cy.get('#JahiaGxtPagesTab').contains(under).rightclick({force: true});
             cy.get('.pagesContextMenuAnthracite').contains('New page').click({force: true});
         });
 
@@ -199,7 +199,7 @@ export class PageComposer extends BasePage {
                     if (elements.length > 0) {
                         return true;
                     }
-                    
+
                     return false;
                 },
                 {

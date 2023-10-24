@@ -51,7 +51,7 @@ export class PageComposerContextualMenu extends BasePage {
         if (childs) {
             return this.execute('Clear lock on node and children');
         }
-        
+
         return this.execute('Clear lock on node');
     }
 
