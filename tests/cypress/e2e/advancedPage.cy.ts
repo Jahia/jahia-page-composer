@@ -36,6 +36,7 @@ const createMenuAndSubPage = () => {
     return pc;
 }
 
+
 const createExternalLink = () => {
     addNode({
         parentPathOrId: `/sites/${siteKey}/home`,
@@ -47,12 +48,6 @@ const createExternalLink = () => {
 
 describe('Advanced page testsuite', () => {
     before('Create site', () => {
-        cy.login();
-        deleteSite(siteKey);
-        deleteUser(userName);
-        deleteUser(adminName);
-        cy.logout();
-
         cy.login();
         createSite(siteKey);
         createUser(userName, 'password');
@@ -80,7 +75,7 @@ describe('Advanced page testsuite', () => {
     })
 
     it('Menu title test', () => {
-        const pc = createMenuAndSubPage();
+        createMenuAndSubPage();
         PageComposer.previewVisit(siteKey, 'en', 'home.html');
         cy.get(`li:contains("${menuName}")`).trigger('onmouseover');
         cy.get(`li:contains("${menuName}")`).trigger('mouseenter');
@@ -122,6 +117,7 @@ describe('Advanced page testsuite', () => {
         menu.unlock();
         pc.leftTreeRefresh();
         pageIsLocked(subPageName, true);
+        deleteNode(`/sites/${siteKey}/home/menu-title`);
     })
 
     it('Lock/Clear lock', () => {
@@ -181,6 +177,10 @@ describe('Advanced page testsuite', () => {
 
 
     after('Delete site and users', () => {
-        
+        cy.login();
+        deleteSite(siteKey);
+        deleteUser(userName);
+        deleteUser(adminName);
+        cy.logout();
     })
 })
