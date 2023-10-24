@@ -30,7 +30,7 @@ const createMenuAndSubPage = () => {
     cy.logout();
     cy.login(userName, 'password');
     const pc = PageComposer.visit(siteKey, 'en', 'home.html');
-    pc.createPage(subPageName, undefined, undefined, undefined, menuName);
+    pc.createPage(subPageName, {under: menuName});
     return pc;
 };
 

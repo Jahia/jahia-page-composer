@@ -38,7 +38,7 @@ describe('Page creation tests', () => {
     });
 
     it('Base test', () => {
-        pageComposer.createPage(basicName, basicSystemName);
+        pageComposer.createPage(basicName, {systemName: basicSystemName});
         markForDeletion(basicName);
         cy.reload();
         undelete(basicName);
@@ -54,7 +54,7 @@ describe('Page creation tests', () => {
         }).then(result => {
             expect(result.errors[0].message).to.contain('javax.jcr.PathNotFoundException');
         });
-        pageComposer.createPage(basicName, basicSystemName);
+        pageComposer.createPage(basicName, {systemName: basicSystemName});
         cy.reload();
         cy.apollo({
             errorPolicy: 'all',
@@ -69,7 +69,7 @@ describe('Page creation tests', () => {
     });
 
     it('Special characters are handled correctly in page name', () => {
-        pageComposer.createPage(nameWithSpecialChars, systemName);
+        pageComposer.createPage(nameWithSpecialChars, {systemName: systemName});
         PageComposer.visit(site, 'en', 'home.html');
         pageComposer.navigateToPage(nameWithSpecialChars);
         pageComposer.shouldContain(nameWithSpecialChars);
@@ -77,7 +77,7 @@ describe('Page creation tests', () => {
     });
 
     it('Special characters are not allowed in system name', () => {
-        pageComposer.createPage(nameWithSpecialChars, nameWithSpecialChars, false);
+        pageComposer.createPage(nameWithSpecialChars, {systemName: nameWithSpecialChars, save: false});
         getComponentByRole(Button, 'createButton').click();
         cy.get('div[data-sel-role="dialog-errorBeforeSave"]').contains('System name').should('be.visible');
     });

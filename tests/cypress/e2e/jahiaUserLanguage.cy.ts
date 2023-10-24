@@ -38,10 +38,10 @@ const jahiaUserLanguageTest = (language: string) => {
     cy.login(editorLogin, editorPassword);
     const pageComposer = new PageComposer();
     PageComposer.visit(siteKey, 'en', 'home.html');
-    pageComposer.createPage('PageEN');
+    pageComposer.createPage('PageEN', {});
     PageComposer.visit(siteKey, language, 'home.html');
     setNodeProperty(`/sites/${siteKey}/home`, 'jcr:title', 'Home', language);
-    pageComposer.createPage(`Page${language.toUpperCase()}`);
+    pageComposer.createPage(`Page${language.toUpperCase()}`, {});
     publishAndWaitJobEnding(`/sites/${siteKey}/home/page${language}`, [language]);
     cy.logout();
 
