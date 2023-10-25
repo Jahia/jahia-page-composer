@@ -62,6 +62,7 @@ describe('Advanced page testsuite', () => {
     it('External link test', () => {
         PageComposer.visit(siteKey, 'en', 'home.html');
         cy.logout();
+        cy.visit('/');
         cy.login(userName, 'password');
         createExternalLink();
         PageComposer.previewVisit(siteKey, 'en', 'home.html');
@@ -91,7 +92,7 @@ describe('Advanced page testsuite', () => {
         pc.leftTreeRefresh();
         pageIsLocked(subPageName);
         cy.logout();
-
+        cy.visit('/');
         cy.login(adminName, 'password');
         PageComposer.visit(siteKey, 'en', 'home/menu-title/my-sub-page.html');
         pc.leftTreeRefresh();
@@ -107,7 +108,7 @@ describe('Advanced page testsuite', () => {
         menu = pc.openContextualMenuOnLeftTree(subPageName);
         menu.actionShouldntBeDisplayed('Unlock');
         cy.logout();
-
+        cy.visit('/');
         cy.login(userName, 'password');
         PageComposer.visit(siteKey, 'en', 'home/menu-title/my-sub-page.html');
         menu = pc.openContextualMenuOnLeftTreeUntil(subPageName, 'Unlock');
@@ -142,7 +143,7 @@ describe('Advanced page testsuite', () => {
         pageIsLocked(externalLinkName, true);
         pageIsLocked(menuName, true);
         cy.logout();
-
+        cy.visit('/');
         cy.login(adminName, 'password');
         PageComposer.visit(siteKey, 'en', 'home.html');
         pageIsLocked('Home', true);

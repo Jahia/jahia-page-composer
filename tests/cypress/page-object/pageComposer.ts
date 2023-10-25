@@ -14,7 +14,7 @@ export class PageComposer extends BasePage {
     }
 
     static visit(site: string, language: string, path: string): PageComposer {
-        cy.visit(`/jahia/page-composer/default/${language}/sites/${site}/${path}`, {retryOnStatusCodeFailure: true});
+        cy.visit(`/jahia/page-composer/default/${language}/sites/${site}/${path}`);
         return new PageComposer();
     }
 
