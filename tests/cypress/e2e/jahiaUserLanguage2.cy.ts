@@ -53,10 +53,10 @@ describe('Jahia user language 2 testsuite: A page should not be available when m
         cy.login(editorLogin, editorPassword);
         const pageComposer = new PageComposer();
         PageComposer.visit(siteKey, 'en', 'home.html');
-        pageComposer.createPage('PageEN');
+        pageComposer.createPage('PageEN', {});
         PageComposer.visit(siteKey, 'es', 'home.html');
         setNodeProperty(`/sites/${siteKey}/home`, 'jcr:title', 'Home', 'es');
-        pageComposer.createPage('PageES');
+        pageComposer.createPage('PageES', {});
         publishAndWaitJobEnding(`/sites/${siteKey}/home/pagees`, ['es']);
         cy.logout();
 
