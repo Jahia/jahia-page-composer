@@ -130,8 +130,8 @@ export class PageComposer extends BasePage {
             cy.get('#nt\\:base_ce\\:systemName').type(systemName, {force: true});
         }
 
-        cy.get('#select-jmix\\:hasTemplateNode_j\\:templateName').should('be.visible').click();
-        cy.get('#select-jmix\\:hasTemplateNode_j\\:templateName').find(`li[role="option"][data-value="${template}"]`).click();
+        cy.get('#select-jmix\\:hasTemplateNode_j\\:templateName,#select-jnt\\:page_j\\:templateName').should('be.visible').click();
+        cy.get('#select-jmix\\:hasTemplateNode_j\\:templateName,#select-jnt\\:page_j\\:templateName').find(`li[role="option"][data-value="${template}"]`).click();
         if (save) {
             ce.save();
         }
