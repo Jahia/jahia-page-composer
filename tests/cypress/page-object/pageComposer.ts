@@ -118,10 +118,8 @@ export class PageComposer extends BasePage {
 
     createPage(title: string, {systemName, save = true, template = 'home', under = 'Home'}: {systemName?: string, save?: boolean, template?: string, under?: string}): ContentEditor {
         const ce = new ContentEditor();
-        cy.iframe('#page-composer-frame', this.iFrameOptions).within(() => {
-            cy.get('#JahiaGxtPagesTab').contains(under).rightclick({force: true});
-            cy.get('.pagesContextMenuAnthracite').contains('New page').click({force: true});
-        });
+        const menu = this.openContextualMenuOnLeftTreeUntil(under, 'New page');
+        menu.newPage();
 
         cy.get('#jnt\\:page_jcr\\:title').type(title, {force: true});
 

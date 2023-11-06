@@ -87,7 +87,7 @@ describe('Advanced page testsuite', () => {
     it('Basic Lock/Unlock', () => {
         const pc = createMenuAndSubPage();
         PageComposer.visit(siteKey, 'en', 'home/menu-title/my-sub-page.html');
-        let menu = pc.openContextualMenuOnLeftTree(subPageName);
+        let menu = pc.openContextualMenuOnLeftTreeUntil(subPageName, 'Lock');
         menu.lock();
         pc.leftTreeRefresh();
         pageIsLocked(subPageName);
@@ -97,7 +97,7 @@ describe('Advanced page testsuite', () => {
         PageComposer.visit(siteKey, 'en', 'home/menu-title/my-sub-page.html');
         pc.leftTreeRefresh();
         pageIsLocked(subPageName);
-        menu = pc.openContextualMenuOnLeftTree(subPageName);
+        menu = pc.openContextualMenuOnLeftTreeUntil(subPageName, 'Edit');
 
         const ce = new ContentEditor();
         menu.edit();
@@ -105,7 +105,7 @@ describe('Advanced page testsuite', () => {
         cy.get('[data-sel-role="lock-info-badge"]').contains(userName).should('be.visible');
         ce.cancel();
         cy.reload();
-        menu = pc.openContextualMenuOnLeftTree(subPageName);
+        menu = pc.openContextualMenuOnLeftTreeUntil(subPageName, 'Edit');
         menu.actionShouldntBeDisplayed('Unlock');
         cy.logout();
         cy.visit('/');
@@ -132,7 +132,7 @@ describe('Advanced page testsuite', () => {
         const pc = createMenuAndSubPage();
         cy.login();
         PageComposer.visit(siteKey, 'en', 'home.html');
-        let menu = pc.openContextualMenuOnLeftTree('Home');
+        let menu = pc.openContextualMenuOnLeftTreeUntil('Home', 'Lock');
         menu.lock();
         pc.leftTreeRefresh();
         menu = pc.openContextualMenuOnLeftTreeUntil('Home', 'Clear lock on node and children');
@@ -150,7 +150,7 @@ describe('Advanced page testsuite', () => {
         pageIsLocked(internalLinkName, true);
         pageIsLocked(externalLinkName, true);
         pageIsLocked(menuName, true);
-        menu = pc.openContextualMenuOnLeftTree('Home');
+        menu = pc.openContextualMenuOnLeftTreeUntil('Home', 'Edit');
         menu.edit();
         cy.get('[data-sel-role="read-only-badge"]').should('not.exist');
         cy.get('[data-sel-role="lock-info-badge"]').should('not.exist');
@@ -160,7 +160,7 @@ describe('Advanced page testsuite', () => {
         ce.cancel();
 
         PageComposer.visit(siteKey, 'en', 'home.html');
-        menu = pc.openContextualMenuOnLeftTree(internalLinkName);
+        menu = pc.openContextualMenuOnLeftTreeUntil(internalLinkName, 'Edit');
         menu.edit();
         cy.get('[data-sel-role="read-only-badge"]').should('not.exist');
         cy.get('[data-sel-role="lock-info-badge"]').should('not.exist');
