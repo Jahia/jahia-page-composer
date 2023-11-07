@@ -47,6 +47,10 @@ export class PageComposerContextualMenu extends BasePage {
         return this.execute('Unlock');
     }
 
+    newPage() {
+        return this.execute('New page');
+    }
+
     clearLock(childs?: boolean) {
         if (childs) {
             return this.execute('Clear lock on node and children');
