@@ -2,11 +2,12 @@
 <!DOCTYPE urlrewrite PUBLIC "-//tuckey.org//DTD UrlRewrite 3.2//EN"
         "http://tuckey.org/res/dtds/urlrewrite3.2.dtd">
 
-<urlrewrite use-query-string="true">
+<urlrewrite>
 
     <rule>
         <name>Jahia edit to V8</name>
         <note>Redirects old cms/edit urls</note>
+        <condition type="query-string" operator="equal">^$</condition>
         <condition operator="notequal" type="parameter" name="redirect">false</condition>
         <!--Allow .do actions to function normally-->
         <condition operator="notequal" type="path-info">\.*\.do$</condition>
@@ -17,11 +18,34 @@
     <rule>
         <name>Jahia contribute to V8</name>
         <note>Redirects old cms/contribute urls</note>
+        <condition type="query-string" operator="equal">^$</condition>
         <condition operator="notequal" type="parameter" name="redirect">false</condition>
         <!--Allow .do actions to function normally-->
         <condition operator="notequal" type="path-info">\.*\.do$</condition>
         <from>^/cms/contribute/(.*)$</from>
         <to type="redirect">%{context-path}/jahia/page-composer/$1</to>
+    </rule>
+
+    <rule>
+        <name>Jahia edit to V8 with query string</name>
+        <note>Redirects old cms/edit urls</note>
+        <condition type="query-string" operator="notequal">^$</condition>
+        <condition operator="notequal" type="parameter" name="redirect">false</condition>
+        <!--Allow .do actions to function normally-->
+        <condition operator="notequal" type="path-info">\.*\.do$</condition>
+        <from>^/cms/edit/(.*)$</from>
+        <to type="redirect">%{context-path}/jahia/page-composer/$1?%{query-string}</to>
+    </rule>
+
+    <rule>
+        <name>Jahia contribute to V8 with query string</name>
+        <note>Redirects old cms/contribute urls</note>
+        <condition type="query-string" operator="notequal">^$</condition>
+        <condition operator="notequal" type="parameter" name="redirect">false</condition>
+        <!--Allow .do actions to function normally-->
+        <condition operator="notequal" type="path-info">\.*\.do$</condition>
+        <from>^/cms/contribute/(.*)$</from>
+        <to type="redirect">%{context-path}/jahia/page-composer/$1?%{query-string}</to>
     </rule>
 
 </urlrewrite>
