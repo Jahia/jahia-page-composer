@@ -75,6 +75,7 @@ jobs:
         with:
           module_id: jahia-page-composer
           testrail_project: Page Composer Module
+          timeout_minutes: 35
           tests_manifest: provisioning-manifest-build.yml
           jahia_image: jahia/jahia-ee-dev:8-SNAPSHOT
           should_use_build_artifacts: true
