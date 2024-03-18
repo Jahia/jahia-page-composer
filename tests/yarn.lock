@@ -106,12 +106,13 @@
   resolved "https://registry.yarnpkg.com/@jahia/content-editor-cypress/-/content-editor-cypress-4.2.0-tests.9.tgz#1d899ce2a78638e7847eccf5c13c242681be1eb7"
   integrity sha512-aJN0Z62EPs82AbiCU9wqEgmzxrZdu3nWm06GpTvMh05FYdv6DeF86bml2IldehGBn8NJCIIy26vA88GL6OJQKw==
 
-"@jahia/cypress@^3.6.0":
-  version "3.17.2"
-  resolved "https://registry.yarnpkg.com/@jahia/cypress/-/cypress-3.17.2.tgz#63663b4b4cf53d6cc7f4edff768201aa63c79ecc"
-  integrity sha512-F7nFVQuA3JfTUzemECT7f/WMC7PAqrrDrKAxy0F2zJGEpBJCH2qBBZq127MkSgH7FyJyzQgRdqyzyAdTz1Bmsw==
+"@jahia/cypress@^3.19.3":
+  version "3.19.3"
+  resolved "https://registry.yarnpkg.com/@jahia/cypress/-/cypress-3.19.3.tgz#b96188dccf0f41d8b7b06513ddcc169f9173d6a9"
+  integrity sha512-1314KbBSa4blHNsxAN6DZSdowGqxvf6FXLn9t7vQrrYfInbJIfXPKz3ofkgVlIWYgayWcYAztwBBQGUBnnBIuA==
   dependencies:
     "@apollo/client" "^3.4.9"
+    cypress-real-events "^1.11.0"
     graphql "^15.5.0"
     graphql-tag "^2.11.0"
 
@@ -999,6 +1000,11 @@ cypress-multi-reporters@^1.6.4:
   dependencies:
     debug "^4.3.4"
     lodash "^4.17.21"
+
+cypress-real-events@^1.11.0:
+  version "1.12.0"
+  resolved "https://registry.yarnpkg.com/cypress-real-events/-/cypress-real-events-1.12.0.tgz#ffeb2b23686ba5b16ac91dd9bc3b6785d36d38d3"
+  integrity sha512-oiy+4kGKkzc2PT36k3GGQqkGxNiVypheWjMtfyi89iIk6bYmTzeqxapaLHS3pnhZOX1IEbTDUVxh8T4Nhs1tyQ==
 
 cypress-recurse@^1.35.2:
   version "1.35.2"
