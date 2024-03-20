@@ -59,6 +59,7 @@ describe('Advanced page testsuite', () => {
         cy.login(userName, 'password');
     });
 
+    // This test is skipped because it was hanging due to a OWASP warning for the external link
     it.skip('External link test', () => {
         PageComposer.visit(siteKey, 'en', 'home.html');
         cy.logout();

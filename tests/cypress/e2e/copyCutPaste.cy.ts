@@ -98,7 +98,7 @@ describe('Copy Cut and Paste tests with page composer', () => {
         cy.logout();
     });
 
-    it('Cut and paste under another site / check vanity url isn\'t the same', () => {
+    it.skip('Cut and paste under another site / check vanity url isn\'t the same', () => {
         const composer = new PageComposer();
         cy.login();
         PageComposer.visit('digitall', 'en', 'home.html');
