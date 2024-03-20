@@ -98,6 +98,8 @@ describe('Copy Cut and Paste tests with page composer', () => {
         cy.logout();
     });
 
+    // This test was timing out on the waitUntil.
+    // To be fixed in BACKLOG-22510
     it.skip('Cut and paste under another site / check vanity url isn\'t the same', () => {
         const composer = new PageComposer();
         cy.login();
