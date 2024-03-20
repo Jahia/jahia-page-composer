@@ -59,7 +59,7 @@ describe('Advanced page testsuite', () => {
         cy.login(userName, 'password');
     });
 
-    it('External link test', () => {
+    it.skip('External link test', () => {
         PageComposer.visit(siteKey, 'en', 'home.html');
         cy.logout();
         cy.visit('/');

@@ -3,7 +3,6 @@ import {defineConfig} from 'cypress';
 export default defineConfig({
     chromeWebSecurity: false,
     defaultCommandTimeout: 10000,
-    videoUploadOnPasses: false,
     reporter: 'cypress-multi-reporters',
     reporterOptions: {
         configFile: 'reporter-config.json'
@@ -25,6 +24,5 @@ export default defineConfig({
         },
         excludeSpecPattern: '*.ignore.ts',
         baseUrl: 'http://localhost:8080',
-        experimentalSessionAndOrigin: false
     }
 });
