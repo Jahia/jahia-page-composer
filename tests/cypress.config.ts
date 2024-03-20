@@ -8,6 +8,7 @@ export default defineConfig({
         configFile: 'reporter-config.json'
     },
     screenshotsFolder: './results/screenshots',
+    video: true,
     videosFolder: './results/videos',
     viewportWidth: 1366,
     viewportHeight: 768,
