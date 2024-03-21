@@ -17,7 +17,6 @@ jobs:
         with:
           nexus_username: ${{ secrets.NEXUS_USERNAME }}
           nexus_password: ${{ secrets.NEXUS_PASSWORD }}
-          nexus_enterprise_releases_url: ${{ secrets.NEXUS_ENTERPRISE_RELEASES_URL }}
 
   static-analysis:
     name: Static Analysis (linting, vulns)
@@ -44,7 +43,6 @@ jobs:
         with:
           nexus_username: ${{ secrets.NEXUS_USERNAME }}
           nexus_password: ${{ secrets.NEXUS_PASSWORD }}
-          module_id: jahia-page-composer
 
   sonar-analysis:
     name: Sonar Analysis
@@ -77,8 +75,9 @@ jobs:
         with:
           module_id: jahia-page-composer
           testrail_project: Page Composer Module
+          timeout_minutes: 35
           tests_manifest: provisioning-manifest-build.yml
-          jahia_image: jahia/jahia-discovery-dev:8-SNAPSHOT
+          jahia_image: jahia/jahia-ee-dev:8-SNAPSHOT
           should_use_build_artifacts: true
           should_skip_testrail: true
           github_artifact_name: jahia-page-composer-standalone-artifacts-${{ github.run_number }}

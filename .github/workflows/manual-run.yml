@@ -19,6 +19,7 @@ on:
 jobs:
   integration-tests:
     name: Integration Tests
+    timeout-minutes: 45
     runs-on: self-hosted
     steps:
       - uses: jahia/jahia-modules-action/helper@v2
@@ -33,6 +34,7 @@ jobs:
         with:
           module_id: jahia-page-composer
           testrail_project: Page Composer Module
+          timeout_minutes: 35
           jahia_image: ${{ github.event.inputs.jahia_image }}
           should_use_build_artifacts: false
           should_skip_artifacts: true

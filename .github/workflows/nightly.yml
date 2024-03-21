@@ -24,9 +24,10 @@ jobs:
       - uses: jahia/jahia-modules-action/integration-tests@v2
         with:
           module_id: jahia-page-composer
-          jahia_image: jahia/jahia-discovery-dev:8-SNAPSHOT
+          jahia_image: jahia/jahia-ee-dev:8-SNAPSHOT
           incident_service: jahia-page-composer-JahiaSN
           testrail_project: Page Composer Module
+          timeout_minutes: 35
           tests_manifest: provisioning-manifest-snapshot.yml
           should_use_build_artifacts: false
           should_skip_artifacts: true
@@ -78,7 +79,7 @@ jobs:
 #       - uses: jahia/jahia-modules-action/integration-tests@v2
 #         with:
 #           module_id: jahia-page-composer
-#           jahia_image: jahia/jahia-discovery:8
+#           jahia_image: jahia/jahia-ee:8
 #           incident_service: jahia-page-composer-JahiaRL
 #           testrail_project: Page Composer Module
 #           tests_manifest: provisioning-manifest-snapshot.yml
