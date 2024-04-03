@@ -120,7 +120,6 @@ describe('Advanced page testsuite', () => {
         deleteNode(`/sites/${siteKey}/home/menu-title`);
     });
 
-    // This test is skipped because it was hanging due to a OWASP warning for the external link
     // To be fixed in BACKLOG-22510
     it.skip('Lock/Clear lock', () => {
         createExternalLink();
