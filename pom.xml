@@ -46,7 +46,7 @@
 
     <properties>
         <jahia-module-type>system</jahia-module-type>
-        <jahia-module-signature>MCwCFBac1A7KXcA8ZUZwKipJ6m+bTENDAhRH0qbw+ndK0OBNJgw2sWaXUT61TQ==</jahia-module-signature>
+        <jahia-module-signature>MCwCFA96xF1U7LicIGpifbOYxbwpQNqRAhRVysXHnRkk3UBbD5aA3Kpg2ou27Q==</jahia-module-signature>
         <yarn.arguments>build:production</yarn.arguments>
         <jahia-depends>graphql-dxm-provider=[2.8.0,99]</jahia-depends>
         <sonar.sources>src/javascript</sonar.sources>
