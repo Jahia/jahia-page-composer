@@ -98,9 +98,7 @@ describe('Copy Cut and Paste tests with page composer', () => {
         cy.logout();
     });
 
-    // This test was timing out on the waitUntil.
-    // To be fixed in BACKLOG-22510
-    it.skip('Cut and paste under another site / check vanity url isn\'t the same', () => {
+    it('Cut and paste under another site / check vanity url isn\'t the same', () => {
         const composer = new PageComposer();
         cy.login();
         PageComposer.visit('digitall', 'en', 'home.html');
@@ -116,8 +114,8 @@ describe('Copy Cut and Paste tests with page composer', () => {
                         result => result?.data?.jcr?.nodeByPath?.vanityUrls[0]?.url === '/about'
                     ),
                 {
-                    timeout: 30000,
-                    interval: 1000,
+                    timeout: 60000,
+                    interval: 2000,
                     verbose: true
                 }
             );

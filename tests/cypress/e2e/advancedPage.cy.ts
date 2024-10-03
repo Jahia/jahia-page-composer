@@ -38,8 +38,8 @@ const createExternalLink = () => {
     addNode({
         parentPathOrId: `/sites/${siteKey}/home`,
         primaryNodeType: 'jnt:externalLink',
-        name: 'jahia-com',
-        properties: [{name: 'jcr:title', value: externalLinkName, language: 'en'}, {name: 'j:url', value: 'http://www.jahia.com'}]
+        name: 'about-blank',
+        properties: [{name: 'jcr:title', value: externalLinkName, language: 'en'}, {name: 'j:url', value: 'about:blank'}]
     });
 };
 
@@ -59,9 +59,7 @@ describe('Advanced page testsuite', () => {
         cy.login(userName, 'password');
     });
 
-    // This test is skipped because it was hanging due to a OWASP warning for the external link
-    // To be fixed in BACKLOG-22510
-    it.skip('External link test', () => {
+    it('External link test', () => {
         PageComposer.visit(siteKey, 'en', 'home.html');
         cy.logout();
         cy.visit('/');
@@ -69,7 +67,7 @@ describe('Advanced page testsuite', () => {
         createExternalLink();
         PageComposer.previewVisit(siteKey, 'en', 'home.html');
         cy.get('a:contains("Jahia.com")').click();
-        cy.url().should('include', 'www.jahia.com');
+        cy.url().should('include', 'about:blank');
 
         deleteNode(`/sites/${siteKey}/home/jahia-com`);
     });
@@ -120,8 +118,7 @@ describe('Advanced page testsuite', () => {
         deleteNode(`/sites/${siteKey}/home/menu-title`);
     });
 
-    // To be fixed in BACKLOG-22510
-    it.skip('Lock/Clear lock', () => {
+    it('Lock/Clear lock', () => {
         createExternalLink();
         getNodeByPath(`/sites/${siteKey}/home`).then(home => {
             addNode({
@@ -133,6 +130,9 @@ describe('Advanced page testsuite', () => {
         });
         cy.login(userName, 'password');
         const pc = createMenuAndSubPage();
+        cy.logout();
+        // eslint-disable-next-line cypress/no-unnecessary-waiting
+        cy.wait(3000);
         cy.login();
         PageComposer.visit(siteKey, 'en', 'home.html');
         let menu = pc.openContextualMenuOnLeftTreeUntil('Home', 'Lock');
