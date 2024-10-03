@@ -1,3 +1,5 @@
+/* eslint cypress/no-unnecessary-waiting: "off" */
+
 import {
     createSite,
     deleteSite,
@@ -36,13 +38,29 @@ describe('Copy Cut and Paste tests with page composer', () => {
     before('Create required content', () => {
         cy.login();
         createSite('testsite');
+        // About
         setNodeProperty('/sites/digitall/home/about', 'jcr:description', 'That\'s the description', 'en');
         setNodeProperty('/sites/digitall/home/about', 'jcr:description', 'C\'est la description', 'fr');
         addVanityUrl('/sites/digitall/home/about', 'en', '/about');
+
+        // Newsroom
+        setNodeProperty('/sites/digitall/home/newsroom', 'jcr:description', 'That\'s the description', 'en');
+        setNodeProperty('/sites/digitall/home/newsroom', 'jcr:description', 'C\'est la description', 'fr');
+        addVanityUrl('/sites/digitall/home/newsroom', 'en', '/newsroom');
+
+        // Investors
+        setNodeProperty('/sites/digitall/home/investors', 'jcr:description', 'That\'s the description', 'en');
+        setNodeProperty('/sites/digitall/home/investors', 'jcr:description', 'C\'est la description', 'fr');
+        addVanityUrl('/sites/digitall/home/investors', 'en', '/investors');
+
+        // Our companies
+        setNodeProperty('/sites/digitall/home/our-companies', 'jcr:description', 'That\'s the description', 'en');
+        setNodeProperty('/sites/digitall/home/our-companies', 'jcr:description', 'C\'est la description', 'fr');
+        addVanityUrl('/sites/digitall/home/our-companies', 'en', '/our-companies');
         cy.logout();
     });
 
-    it('Copy and paste in another site', () => {
+    it('Copy and paste in another site (about page)', () => {
         const composer = new PageComposer();
         cy.login();
         PageComposer.visit('digitall', 'en', 'home.html');
@@ -58,70 +76,68 @@ describe('Copy Cut and Paste tests with page composer', () => {
         cy.logout();
     });
 
-    it('Copy and paste under the same site, same parent', () => {
+    it('Copy and paste under the same site, same parent (newsroom page)', () => {
         const composer = new PageComposer();
         cy.login();
         PageComposer.visit('digitall', 'en', 'home.html');
-        let contextMenu = composer.openContextualMenuOnLeftTree('About');
+        let contextMenu = composer.openContextualMenuOnLeftTree('Newsroom');
         contextMenu.copy();
         contextMenu = composer.openContextualMenuOnLeftTreeUntil('Home', 'Paste');
         contextMenu.paste().then(() => {
-            checkDescriptions('/sites/digitall/home/about-1');
+            checkDescriptions('/sites/digitall/home/newsroom-1');
             cy.reload();
             cy.iframe('#page-composer-frame').within(() => {
-                cy.get('div[class *= "x-grid3-row"]:contains("About")').should('have.length', 2);
+                cy.get('div[class *= "x-grid3-row"]:contains("Newsroom")').should('have.length', 2);
             });
-            getNodeByPath('/sites/digitall/home/about-1', ['jcr:title'], 'en').then(result => {
-                expect(result?.data?.jcr?.nodeByPath?.name).to.eq('about-1');
-                expect(result?.data?.jcr?.nodeByPath?.properties[0].value).to.eq('About');
+            getNodeByPath('/sites/digitall/home/newsroom-1', ['jcr:title'], 'en').then(result => {
+                expect(result?.data?.jcr?.nodeByPath?.name).to.eq('newsroom-1');
+                expect(result?.data?.jcr?.nodeByPath?.properties[0].value).to.eq('Newsroom');
             });
-            deleteNode('/sites/digitall/home/about-1');
+            deleteNode('/sites/digitall/home/newsroom-1');
         });
         cy.logout();
     });
 
-    it('Copy and paste under the same site, other parent', () => {
+    it('Copy and paste under the same site, other parent (investors page)', () => {
         const composer = new PageComposer();
         cy.login();
         PageComposer.visit('digitall', 'en', 'home.html');
-        let contextMenu = composer.openContextualMenuOnLeftTree('About');
+        let contextMenu = composer.openContextualMenuOnLeftTree('Investors');
         contextMenu.copy();
         contextMenu = composer.openContextualMenuOnLeftTreeUntil('Newsroom', 'Paste');
         contextMenu.paste().then(() => {
-            checkDescriptions('/sites/digitall/home/newsroom/about');
-            getNodeByPath('/sites/digitall/home/newsroom/about', ['jcr:title'], 'en').then(result => {
-                expect(result?.data?.jcr?.nodeByPath?.name).to.eq('about');
-                expect(result?.data?.jcr?.nodeByPath?.properties[0].value).to.eq('About');
+            checkDescriptions('/sites/digitall/home/newsroom/investors');
+            getNodeByPath('/sites/digitall/home/newsroom/investors', ['jcr:title'], 'en').then(result => {
+                expect(result?.data?.jcr?.nodeByPath?.name).to.eq('investors');
+                expect(result?.data?.jcr?.nodeByPath?.properties[0].value).to.eq('Investors');
             });
-            deleteNode('/sites/digitall/home/newsroom/about');
+            deleteNode('/sites/digitall/home/newsroom/investors');
         });
         cy.logout();
     });
 
-    // This test was timing out on the waitUntil.
-    // To be fixed in BACKLOG-22510
-    it.skip('Cut and paste under another site / check vanity url isn\'t the same', () => {
+    it('Cut and paste under another site / check vanity url isn\'t the same (our companies page)', () => {
         const composer = new PageComposer();
         cy.login();
         PageComposer.visit('digitall', 'en', 'home.html');
-        let contextMenu = composer.openContextualMenuOnLeftTree('About');
+        let contextMenu = composer.openContextualMenuOnLeftTree('Our Companies');
         contextMenu.cut();
-        composer.openContextualMenuOnLeftTreeUntil('Newsroom', 'Paste');
+        cy.wait(5000);
         PageComposer.visit('testsite', 'en', 'home.html');
         contextMenu = composer.openContextualMenuOnLeftTreeUntil('Home', 'Paste');
         contextMenu.paste().then(() => {
             cy.waitUntil(
                 () =>
-                    getVanityUrl('/sites/testsite/home/about', ['en']).then(
-                        result => result?.data?.jcr?.nodeByPath?.vanityUrls[0]?.url === '/about'
+                    getVanityUrl('/sites/testsite/home/our-companies', ['en']).then(
+                        result => result?.data?.jcr?.nodeByPath?.vanityUrls[0]?.url === '/our-companies'
                     ),
                 {
-                    timeout: 30000,
-                    interval: 1000,
+                    timeout: 60000,
+                    interval: 2000,
                     verbose: true
                 }
             );
-            moveNode('/sites/testsite/home/about', '/sites/digitall/home', 'about');
+            moveNode('/sites/testsite/home/our-companies', '/sites/digitall/home', 'our-companies');
         });
         cy.logout();
     });
@@ -132,6 +148,18 @@ describe('Copy Cut and Paste tests with page composer', () => {
         deleteNodeProperty('/sites/digitall/home/about', 'jcr:description', 'en');
         deleteNodeProperty('/sites/digitall/home/about', 'jcr:description', 'fr');
         removeVanityUrl('/sites/digitall/home/about', '/about');
+
+        deleteNodeProperty('/sites/digitall/home/newsroom', 'jcr:description', 'en');
+        deleteNodeProperty('/sites/digitall/home/newsroom', 'jcr:description', 'fr');
+        removeVanityUrl('/sites/digitall/home/newsroom', '/newsroom');
+
+        deleteNodeProperty('/sites/digitall/home/investors', 'jcr:description', 'en');
+        deleteNodeProperty('/sites/digitall/home/investors', 'jcr:description', 'fr');
+        removeVanityUrl('/sites/digitall/home/investors', '/investors');
+
+        deleteNodeProperty('/sites/digitall/home/our-companies', 'jcr:description', 'en');
+        deleteNodeProperty('/sites/digitall/home/our-companies', 'jcr:description', 'fr');
+        removeVanityUrl('/sites/digitall/home/our-companies', '/our-companies');
         cy.logout();
     });
 });
