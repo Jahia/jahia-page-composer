@@ -164,7 +164,7 @@ export default function () {
         return <Loader/>;
     }
 
-    const homePage = data?.jcr?.nodeByPath?.site?.homePage;
+    const homePage = data?.jcr?.nodeByPath?.site?.homePage || {name: '', path: ''};
 
     if (iFramePath.current.indexOf(placeholder) !== -1 && homePage && !current.path && !error) {
         const path = iFramePath.current.replace(placeholder,
