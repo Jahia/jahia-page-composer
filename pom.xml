@@ -50,6 +50,7 @@
         <yarn.arguments>build:production</yarn.arguments>
         <jahia-depends>graphql-dxm-provider=[2.8.0,99]</jahia-depends>
         <sonar.sources>src/javascript</sonar.sources>
+        <jahia.plugin.version>6.9</jahia.plugin.version>
     </properties>
 
     <repositories>
