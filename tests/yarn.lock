@@ -106,10 +106,10 @@
   resolved "https://registry.yarnpkg.com/@jahia/content-editor-cypress/-/content-editor-cypress-4.2.0-tests.9.tgz#1d899ce2a78638e7847eccf5c13c242681be1eb7"
   integrity sha512-aJN0Z62EPs82AbiCU9wqEgmzxrZdu3nWm06GpTvMh05FYdv6DeF86bml2IldehGBn8NJCIIy26vA88GL6OJQKw==
 
-"@jahia/cypress@^3.19.3":
-  version "3.19.3"
-  resolved "https://registry.yarnpkg.com/@jahia/cypress/-/cypress-3.19.3.tgz#b96188dccf0f41d8b7b06513ddcc169f9173d6a9"
-  integrity sha512-1314KbBSa4blHNsxAN6DZSdowGqxvf6FXLn9t7vQrrYfInbJIfXPKz3ofkgVlIWYgayWcYAztwBBQGUBnnBIuA==
+"@jahia/cypress@^4.0.0":
+  version "4.0.0"
+  resolved "https://registry.yarnpkg.com/@jahia/cypress/-/cypress-4.0.0.tgz#d47b4b013c5f26bf969caf652c426a9a780b225d"
+  integrity sha512-rvG0NpB6RddUOcEr2JS9S3s3E0wdzUv1BtaTekLBsT8sW1wv/CfDiIQQxG3dwaS/JpTon4eGK6VyrPEUuT4xGQ==
   dependencies:
     "@apollo/client" "^3.4.9"
     cypress-real-events "^1.11.0"
