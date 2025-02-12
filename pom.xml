@@ -29,11 +29,11 @@
     <parent>
         <artifactId>jahia-modules</artifactId>
         <groupId>org.jahia.modules</groupId>
-        <version>8.1.3.0</version>
+        <version>8.2.0.0</version>
     </parent>
     <artifactId>jahia-page-composer</artifactId>
     <name>Jahia Page Composer</name>
-    <version>1.13.0-SNAPSHOT</version>
+    <version>2.0.0-SNAPSHOT</version>
     <packaging>bundle</packaging>
     <description>This is the custom module (jahia-page-composer) for running on a Jahia server.</description>
 
@@ -46,11 +46,10 @@
 
     <properties>
         <jahia-module-type>system</jahia-module-type>
-        <jahia-module-signature>MCwCFA96xF1U7LicIGpifbOYxbwpQNqRAhRVysXHnRkk3UBbD5aA3Kpg2ou27Q==</jahia-module-signature>
+        <jahia-module-signature>MCwCFAR8fZLx/wcLoDGJbt4XxNFfcmX3AhRNh+iz1xUf1LInsc9yhntxYAi6gQ==</jahia-module-signature>
         <yarn.arguments>build:production</yarn.arguments>
-        <jahia-depends>graphql-dxm-provider=[2.8.0,99]</jahia-depends>
+        <jahia-depends>graphql-dxm-provider=2.8,jcontent=3.2</jahia-depends>
         <sonar.sources>src/javascript</sonar.sources>
-        <jahia.plugin.version>6.9</jahia.plugin.version>
     </properties>
 
     <repositories>
@@ -101,8 +100,8 @@
                             <goal>install-node-and-yarn</goal>
                         </goals>
                         <configuration>
-                            <nodeVersion>v14.18.0</nodeVersion>
-                            <yarnVersion>v1.22.17</yarnVersion>
+                            <nodeVersion>v18.20.6</nodeVersion>
+                            <yarnVersion>v1.22.21</yarnVersion>
                         </configuration>
                     </execution>
                     <execution>
