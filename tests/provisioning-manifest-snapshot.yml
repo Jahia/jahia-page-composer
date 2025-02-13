@@ -24,6 +24,8 @@
   - 'mvn:org.jahia.modules/default-skins'
   - 'mvn:org.jahia.modules/grid'
   - 'mvn:org.jahia.modules/tabularList'
+  - 'mvn:org.jahia.modules/jahia-ui-root/1.10.0'
+  - 'mvn:org.jahia.modules/graphql-dxm-provider/3.2.0'
   autoStart: true
   uninstallPreviousVersion: true
 
