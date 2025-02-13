@@ -28,7 +28,7 @@ jobs:
           incident_service: jahia-page-composer-JahiaRL
           testrail_project: Page Composer Module
           timeout_minutes: 35
-          tests_manifest: provisioning-manifest-snapshot.yml
+          tests_manifest: provisioning-manifest-release.yml
           should_use_build_artifacts: false
           should_skip_artifacts: true
           should_skip_notifications: false
