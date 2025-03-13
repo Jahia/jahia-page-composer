@@ -188,22 +188,23 @@ export class PageComposer extends BasePage {
         cy.log('Open contextual manu on ' + entry + ' entry');
 
         cy.iframe('#page-composer-frame', this.iFrameOptions).should('be.visible').within(() => {
-            recurse(
-                () => cy.get('#JahiaGxtPagesTab').find('span').contains(entry).rightclick({force: true}),
-                () => {
-                    const elements = Cypress.$('#page-composer-frame')
-                        .contents()
-                        .find(`span[class *= "x-menu-item"]:contains("${action}"):not(:contains("${action} ")):visible`);
-                    if (elements.length > 0) {
-                        return true;
-                    }
+            // eslint-disable-next-line cypress/unsafe-to-chain-command
+            cy.get('#JahiaGxtPagesTab')
+                .find('span')
+                .contains(entry)
+                .rightclick({force: true})
+                .then(() => {
+                    cy.waitUntil(() => {
+                        const elements = Cypress.$('#page-composer-frame')
+                            .contents()
+                            .find(`span[class *= "x-menu-item"]:contains("${action}"):not(:contains("${action} ")):visible`);
+                        if (elements.length > 0) {
+                            return true;
+                        }
 
-                    return false;
-                },
-                {
-                    timeout: 90000
-                }
-            );
+                        return false;
+                    }, {timeout: 10000, interval: 1000});
+                });
         });
         return new PageComposerContextualMenu('.pagesContextMenuAnthracite');
     }
