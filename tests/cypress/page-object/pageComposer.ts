@@ -189,7 +189,7 @@ export class PageComposer extends BasePage {
 
         cy.iframe('#page-composer-frame', this.iFrameOptions).should('be.visible').within(() => {
             recurse(
-                () => cy.get('#JahiaGxtPagesTab').contains(entry).rightclick({force: true}),
+                () => cy.get('#JahiaGxtPagesTab').find('span').contains(entry).rightclick({force: true}),
                 () => {
                     const elements = Cypress.$('#page-composer-frame')
                         .contents()
