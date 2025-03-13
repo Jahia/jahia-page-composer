@@ -206,6 +206,7 @@ export class PageComposer extends BasePage {
                     }, {timeout: 10000, interval: 1000});
                 });
         });
+        cy.wait(2000);
         return new PageComposerContextualMenu('.pagesContextMenuAnthracite');
     }
 
