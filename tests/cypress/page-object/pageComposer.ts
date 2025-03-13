@@ -119,20 +119,20 @@ export class PageComposer extends BasePage {
     createPage(title: string, {systemName, save = true, template = 'home', under = 'Home'}: {systemName?: string, save?: boolean, template?: string, under?: string}): ContentEditor {
         const ce = new ContentEditor();
         const menu = this.openContextualMenuOnLeftTreeUntil(under, 'New page');
-        menu.newPage();
+        menu.newPage().then(() => {
+            cy.get('#jnt\\:page_jcr\\:title').type(title, {force: true});
 
-        cy.get('#jnt\\:page_jcr\\:title').type(title, {force: true});
+            if (systemName) {
+                cy.get('#nt\\:base_ce\\:systemName').clear({force: true});
+                cy.get('#nt\\:base_ce\\:systemName').type(systemName, {force: true});
+            }
 
-        if (systemName) {
-            cy.get('#nt\\:base_ce\\:systemName').clear({force: true});
-            cy.get('#nt\\:base_ce\\:systemName').type(systemName, {force: true});
-        }
-
-        cy.get('#select-jmix\\:hasTemplateNode_j\\:templateName').should('be.visible').click();
-        cy.get('#select-jmix\\:hasTemplateNode_j\\:templateName').find(`li[role="option"][data-value="${template}"]`).click();
-        if (save) {
-            ce.save();
-        }
+            cy.get('#select-jmix\\:hasTemplateNode_j\\:templateName').should('be.visible').click();
+            cy.get('#select-jmix\\:hasTemplateNode_j\\:templateName').find(`li[role="option"][data-value="${template}"]`).click();
+            if (save) {
+                ce.save();
+            }
+        });
 
         return ce;
     }
@@ -211,12 +211,11 @@ export class PageComposer extends BasePage {
 
     openContextualMenuOnContentUntil(selector: string | number | symbol, action: string) {
         cy.iframe('#page-composer-frame', this.iFrameOptions).within(() => {
-            recurse(
-                () =>
-                    cy.iframe('.gwt-Frame', this.iFrameOptions).within(() => {
-                        cy.get(selector).rightclick({force: true});
-                    }),
-                () => {
+            // eslint-disable-next-line cypress/unsafe-to-chain-command
+            cy.iframe('.gwt-Frame', this.iFrameOptions).within(() => {
+                cy.get(selector).rightclick({force: true});
+            }).then(() => {
+                cy.waitUntil(() => {
                     const elements = Cypress.$('#page-composer-frame')
                         .contents()
                         .find(`span[class *= "x-menu-item"]:contains("${action}"):not(:contains("${action} ")):visible`);
@@ -225,11 +224,8 @@ export class PageComposer extends BasePage {
                     }
 
                     return false;
-                },
-                {
-                    timeout: 90000
-                }
-            );
+                }, {timeout: 10000, interval: 1000});
+            });
         });
         return new PageComposerContextualMenu('.editModeContextMenu');
     }
