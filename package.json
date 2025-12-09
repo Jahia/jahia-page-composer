@@ -1,6 +1,6 @@
 {
   "name": "@jahia/jahia-page-composer",
-  "version": "2.1.0-SNAPSHOT",
+  "version": "2.1.0",
   "husky": {
     "hooks": {
       "pre-push": "yarn lint:fix"
