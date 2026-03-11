@@ -13,6 +13,7 @@ jobs:
     with:
       module_id: jahia-page-composer
       provisioning_manifest: provisioning-manifest-release.yml
+      incident_service: jahia-page-composer-JahiaRL
       testrail_project: Page Composer Module
       jahia_image: jahia/jahia-ee:8
       artifact_prefix: jpc-rl
