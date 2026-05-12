@@ -60,7 +60,7 @@ jobs:
       provisioning_manifest: provisioning-manifest-build.yml
       incident_service: jahia-page-composer-JahiaSN
       testrail_project: Page Composer Module
-      jahia_image: jahia/jahia-ee-dev:8-SNAPSHOT
+      jahia_image: ghcr.io/jahia/jahia-ee-dev:8-SNAPSHOT
       should_use_build_artifacts: true
       artifact_prefix: jahia-page-composer-standalone-artifacts
       timeout_job: 45

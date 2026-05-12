@@ -66,7 +66,7 @@ jobs:
       module_id: jahia-page-composer
       provisioning_manifest: provisioning-manifest-build.yml
       testrail_project: Page Composer Module
-      jahia_image: jahia/jahia-ee-dev:8-SNAPSHOT
+      jahia_image: ghcr.io/jahia/jahia-ee-dev:8-SNAPSHOT
       should_use_build_artifacts: true
       should_skip_testrail: true
       artifact_prefix: jahia-page-composer-standalone-artifacts
