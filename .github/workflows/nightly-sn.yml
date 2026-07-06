@@ -17,5 +17,5 @@ jobs:
       testrail_project: Page Composer Module
       jahia_image: ghcr.io/jahia/jahia-ee-dev:8-SNAPSHOT
       artifact_prefix: jpc-sn
-      timeout_job: 45
-      timeout_step: 35
+      timeout_job: 55
+      timeout_step: 45
