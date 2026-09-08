@@ -23,6 +23,7 @@ jobs:
     uses: Jahia/jahia-modules-action/.github/workflows/reusable-integration-tests.yml@v2
     with:
       module_id: jahia-page-composer
+      module_branch: ${{ github.ref }}
       provisioning_manifest: ${{ github.event.inputs.manifest }}
       jahia_image: ${{ github.event.inputs.jahia_image }}
       should_skip_testrail: true
