@@ -24,7 +24,21 @@ export class PageComposerContextualMenu extends BasePage {
     }
 
     paste(): Cypress.Chainable {
-        return this.execute('Paste');
+        // GWT reports a failed paste with Window.alert(); Cypress only handles dialogs of the top window,
+        // so an unstubbed alert in the frame blocks the browser and the run hangs without any timeout
+        cy.get('#page-composer-frame').its('0.contentWindow').then(win => {
+            cy.stub(win, 'alert').as('pasteAlert');
+        });
+        cy.intercept('POST', '**/gwt/contentManager.gwt*', req => {
+            if (typeof req.body === 'string' && req.body.includes('|paste|')) {
+                req.alias = 'paste';
+            }
+        });
+        this.execute('Paste');
+        // The copy is saved before the RPC returns: wait for it, or the caller may delete the copy mid-paste
+        return cy.wait('@paste', {timeout: 60000}).then(interception => {
+            expect(interception.response?.body, 'GWT paste response').to.match(/^\/\/OK/);
+        });
     }
 
     delete() {
